@@ -34,6 +34,7 @@ const SignInScreen = ({ navigation }) => {
       showToast('Login successfully!')
       navigation.navigate(SCREEN.HOME)
     }
+
     error && showToast(error?.response?.data?.detail)
   }, [response, error])
 

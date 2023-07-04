@@ -1,5 +1,7 @@
-import { ToastAndroid } from 'react-native'
+import Toast from 'react-native-root-toast'
 
 export const showToast = (message) => {
-  ToastAndroid.show(message, ToastAndroid.SHORT)
+  Toast.show(message, {
+    duration: Toast.durations.LONG
+  })
 }

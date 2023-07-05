@@ -1,11 +1,15 @@
-import { SafeAreaView } from 'react-native'
+import { SafeAreaView, View, Text } from 'react-native'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 
 const HomeScreen = () => {
   const dispatch = useDispatch()
 
-  return <SafeAreaView className='h-full bg-white'></SafeAreaView>
+  return <SafeAreaView className='h-full bg-white'>
+    <View>
+      <Text>a</Text>
+    </View>
+  </SafeAreaView>
 }
 
 export default HomeScreen

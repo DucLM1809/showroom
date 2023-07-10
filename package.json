@@ -10,6 +10,8 @@
   },
   "dependencies": {
     "@react-native-masked-view/masked-view": "0.2.8",
+    "@react-native-seoul/masonry-list": "^1.4.2",
+    "@react-navigation/bottom-tabs": "^6.5.8",
     "@react-navigation/native": "^6.1.6",
     "@react-navigation/native-stack": "^6.9.12",
     "@reduxjs/toolkit": "^1.9.5",
@@ -31,7 +33,9 @@
     "react-native-screens": "~3.20.0",
     "react-native-vector-icons": "^9.2.0",
     "react-redux": "^8.0.5",
-    "tailwind-react-native-classnames": "^1.5.1"
+    "reanimated-masonry-list": "^1.0.1",
+    "tailwind-react-native-classnames": "^1.5.1",
+    "typescript": "^4.9.4"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

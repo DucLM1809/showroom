@@ -13,8 +13,10 @@ export const useLoginGoogle = () => {
 
       if (res) {
         setResponse(res)
+        setError(null)
       }
     } catch (error) {
+      setResponse(null)
       setError(error)
     }
   }
@@ -32,8 +34,10 @@ export const useLogin = () => {
 
       if (res) {
         setResponse(res)
+        setError(null)
       }
     } catch (error) {
+      setResponse(null)
       setError(error)
     }
   }
@@ -51,8 +55,10 @@ export const useSignUp = () => {
 
       if (res) {
         setResponse(res)
+        setError(null)
       }
     } catch (error) {
+      setResponse(null)
       setError(error)
     }
   }
@@ -70,8 +76,10 @@ export const useLogout = () => {
 
       if (res) {
         setResponse(res)
+        setError(null)
       }
     } catch (error) {
+      setResponse(null)
       setError(error)
     }
   }
@@ -89,8 +97,10 @@ export const useActivateResendRequest = () => {
 
       if (res) {
         setResponse(res)
+        setError(null)
       }
     } catch (error) {
+      setResponse(null)
       setError(error)
     }
   }
@@ -108,11 +118,55 @@ export const useActivate = () => {
 
       if (res) {
         setResponse(res)
+        setError(null)
       }
     } catch (error) {
+      setResponse(null)
       setError(error)
     }
   }
 
   return { response, error, handleActivate }
+}
+
+export const useForgotPassword = () => {
+  const [error, setError] = useState()
+  const [response, setResponse] = useState()
+
+  const handleForgotPassword = async (body) => {
+    try {
+      const res = await AxiosPost('auth/users/forgot-password', body)
+
+      if (res) {
+        setResponse(res)
+        setError(null)
+      }
+    } catch (error) {
+      setResponse(null)
+      setError(error)
+    }
+  }
+
+  return { response, error, handleForgotPassword }
+}
+
+export const useResetPassword = () => {
+  const [error, setError] = useState()
+  const [response, setResponse] = useState()
+
+  const handleResetPassword = async (body) => {
+    try {
+      const res = await AxiosPost('auth/users/reset-password', body)
+
+      if (res) {
+        setResponse(res)
+        setError(null)
+      }
+    } catch (error) {
+      setResponse(null)
+      setError(error)
+    }
+  }
+
+  return { response, error, handleResetPassword }
 }

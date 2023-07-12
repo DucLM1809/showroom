@@ -64,17 +64,19 @@ const SignInScreen = ({ navigation }) => {
       navigation.navigate(SCREEN.HOME)
     }
 
+    console.log('ERROR', error)
+
     error && showToast(error?.response?.data?.detail)
   }, [responseLogin, error])
 
   useEffect(() => {
-    if (responseLoginGoogle) {
+    if (responseLoginGoogle && !errorLoginGoogle) {
       showToast('Login successfully!')
       TokenService.setAccessToken(responseLoginGoogle.data.accessToken)
       navigation.navigate(SCREEN.HOME)
     }
 
-    error && showToast(errorLoginGoogle?.response?.data?.detail)
+    errorLoginGoogle && showToast(errorLoginGoogle?.response?.data?.detail)
   }, [responseLoginGoogle, errorLoginGoogle])
 
   return (
@@ -150,7 +152,9 @@ const SignInScreen = ({ navigation }) => {
         </View>
 
         <View className='flex-row justify-between'>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(SCREEN.FORGOT_PASSWORD)}
+          >
             <Text className='font-semibold underline mb-4'>
               Forgot password?
             </Text>

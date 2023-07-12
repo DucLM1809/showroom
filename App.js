@@ -10,6 +10,8 @@ import SignUpScreen from './screens/SignUpScreen'
 import StarterScreen from './screens/StarterScreen'
 import { SCREEN } from './constants/screen'
 import ActivateScreen from './screens/ActivateScreen'
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen'
+import ResetPasswordScreen from './screens/ResetPasswordScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -29,6 +31,14 @@ export default function App() {
             <Stack.Screen name={SCREEN.SIGNUP} component={SignUpScreen} />
             <Stack.Screen name={SCREEN.HOME} component={HomeScreen} />
             <Stack.Screen name={SCREEN.ACTIVATE} component={ActivateScreen} />
+            <Stack.Screen
+              name={SCREEN.FORGOT_PASSWORD}
+              component={ForgotPasswordScreen}
+            />
+            <Stack.Screen
+              name={SCREEN.RESET_PASSWORD}
+              component={ResetPasswordScreen}
+            />
           </Stack.Navigator>
           {/* </KeyboardAvoidingView> */}
         </NavigationContainer>

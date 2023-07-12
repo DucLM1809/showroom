@@ -5,7 +5,7 @@ import { Image } from 'react-native'
 import { useForm, useWatch } from 'react-hook-form'
 import CustomInput from '../components/CustomInput'
 import { SCREEN } from '../constants/screen'
-import { useActivate, useActivateResendRequest } from '../hooks/useAuth'
+import { useActivate, useResetPassword } from '../hooks/useAuth'
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 
 import { useEffect } from 'react'
@@ -14,7 +14,7 @@ import { showToast } from '../utils/toast'
 import Entypo from 'react-native-vector-icons/Entypo'
 import { StyleSheet } from 'react-native'
 
-const ActivateScreen = ({ navigation }) => {
+const ResetPasswordScreen = ({ navigation }) => {
   const {
     control,
     handleSubmit,
@@ -27,14 +27,7 @@ const ActivateScreen = ({ navigation }) => {
   const [isOtpFilled, setIsOtpFilled] = useState(true)
 
   // MUTATION
-  const { handleActivateResendRequest, response, error } =
-    useActivateResendRequest()
-
-  const {
-    handleActivate,
-    response: responseActivate,
-    error: errorActivate
-  } = useActivate()
+  const { handleResetPassword, response, error } = useResetPassword()
 
   const onActivatePressed = (data) => {
     // validate user
@@ -43,32 +36,18 @@ const ActivateScreen = ({ navigation }) => {
     } else {
       setIsOtpFilled(true)
       // handleSignUp(data)
-      handleActivate({ ...data, otpCode })
+      handleResetPassword({ ...data, otpCode })
     }
-  }
-
-  const onActivateResendRequestPressed = () => {
-    handleActivateResendRequest({ email })
   }
 
   useEffect(() => {
     if (response) {
-      showToast(
-        'OTP has been resent to your email! Please check your email to activate this account.'
-      )
+      showToast('Change Password Successfully!')
+      navigation.navigate(SCREEN.SIGNIN)
     }
 
     error && showToast(error?.response?.data?.detail)
   }, [response, error])
-
-  useEffect(() => {
-    if (responseActivate) {
-      showToast('Activate Account Successfully!')
-      navigation.navigate(SCREEN.SIGNIN)
-    }
-
-    errorActivate && showToast(errorActivate?.response?.data?.detail)
-  }, [responseActivate, errorActivate])
 
   return (
     <SafeAreaView className='bg-white flex-1'>
@@ -117,6 +96,44 @@ const ActivateScreen = ({ navigation }) => {
 
           <View className='mb-4'>
             <Text className='font-semibold mb-2'>
+              Password <Text className='text-red-400'>*</Text>
+            </Text>
+            <CustomInput
+              placeholder='Password'
+              secureTextEntry={true}
+              name='newPassword'
+              control={control}
+              rules={{
+                required: 'Password is required',
+                pattern: {
+                  value: /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/,
+                  message:
+                    'Password must contain at least one lower character, one upper character, digit or special symbol'
+                }
+              }}
+            />
+          </View>
+
+          <View className='mb-4'>
+            <Text className='font-semibold mb-2'>
+              Confirm Password <Text className='text-red-400'>*</Text>
+            </Text>
+            <CustomInput
+              placeholder='Confirm password'
+              secureTextEntry={true}
+              name='confirmPassword'
+              control={control}
+              rules={{
+                required: 'Confirm password is required',
+                validate: (value) =>
+                  value === watch('newPassword') ||
+                  'Confirm password do not match'
+              }}
+            />
+          </View>
+
+          <View className='mb-4'>
+            <Text className='font-semibold mb-2'>
               OTP <Text className='text-red-400'>*</Text>
             </Text>
 
@@ -125,8 +142,8 @@ const ActivateScreen = ({ navigation }) => {
               pinCount={5}
               autoFocusOnLoad
               onCodeFilled={(code) => {
-                setIsOtpFilled(true)
                 setOtpCode(code)
+                setIsOtpFilled(true)
               }}
               codeInputHighlightStyle={styles.underlineStyleHighLighted}
             />
@@ -142,19 +159,7 @@ const ActivateScreen = ({ navigation }) => {
             className='bg-primary-500 py-4 rounded-2xl'
             onPress={handleSubmit(onActivatePressed)}
           >
-            <Text className='text-center font-semibold'>Activate</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View className='flex-row items-center justify-center mb-4'>
-          <View className='flex-1 h-[1px] bg-gray-300'></View>
-          <Text className='font-semibold bg-background my-2 mx-2'>or</Text>
-          <View className='flex-1  h-[1px] bg-gray-300'></View>
-        </View>
-
-        <View className='flex-row gap-2 justify-center'>
-          <TouchableOpacity onPress={onActivateResendRequestPressed}>
-            <Text className='font-semibold underline'>Resend OTP</Text>
+            <Text className='text-center font-semibold'>Reset</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -162,7 +167,7 @@ const ActivateScreen = ({ navigation }) => {
   )
 }
 
-export default ActivateScreen
+export default ResetPasswordScreen
 
 const styles = StyleSheet.create({
   borderStyleBase: {

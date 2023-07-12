@@ -2,17 +2,17 @@ import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Image } from 'react-native'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 import CustomInput from '../components/CustomInput'
 import { SCREEN } from '../constants/screen'
-import { useSignUp } from '../hooks/useAuth'
+import { useActivateResendRequest } from '../hooks/useAuth'
 
 import { useEffect } from 'react'
 import { showToast } from '../utils/toast'
 
 import Entypo from 'react-native-vector-icons/Entypo'
 
-const SignUpScreen = ({ navigation }) => {
+const ActivateScreen = ({ navigation }) => {
   const {
     control,
     handleSubmit,
@@ -20,24 +20,28 @@ const SignUpScreen = ({ navigation }) => {
     formState: { errors }
   } = useForm()
 
+  const email = useWatch({ control, name: 'email' })
+
   // MUTATION
-  const { handleSignUp, response, error } = useSignUp()
+  const { handleActivateResendRequest, response, error } =
+    useActivateResendRequest()
 
   const onSignUpPressed = (data) => {
     // validate user
     handleSignUp(data)
   }
 
-  const onSignInPressed = () => {
-    navigation.navigate(SCREEN.SIGNIN)
+  const onActivateResendRequestPressed = () => {
+    handleActivateResendRequest({ email })
   }
 
   useEffect(() => {
     if (response) {
-      showToast('Register successfully!')
-      navigation.navigate(SCREEN.SIGNIN)
+      showToast('OTP has been resent to your email!')
     }
-    error && showToast(error?.response?.data?.detail)
+
+    console.log(error?.toString())
+    // error && showToast(error?.response?.data?.detail)
   }, [response, error])
 
   return (
@@ -85,48 +89,11 @@ const SignUpScreen = ({ navigation }) => {
             />
           </View>
 
-          <View className='mb-4'>
-            <Text className='font-semibold mb-2'>
-              Password <Text className='text-red-400'>*</Text>
-            </Text>
-            <CustomInput
-              placeholder='Password'
-              secureTextEntry={true}
-              name='password'
-              control={control}
-              rules={{
-                required: 'Password is required',
-                pattern: {
-                  value: /^(?=.*?[a-z])(?=.*?[A-Z])(?=.*?[0-9])(?=.*?\W).*$/,
-                  message:
-                    'Password must contain at least one lower character, one upper character, digit or special symbol'
-                }
-              }}
-            />
-          </View>
-
-          <View className='mb-4'>
-            <Text className='font-semibold mb-2'>
-              Confirm Password <Text className='text-red-400'>*</Text>
-            </Text>
-            <CustomInput
-              placeholder='Confirm password'
-              secureTextEntry={true}
-              name='confirmPassword'
-              control={control}
-              rules={{
-                required: 'Confirm password is required',
-                validate: (value) =>
-                  value === watch('password') || 'Confirm password do not match'
-              }}
-            />
-          </View>
-
           <TouchableOpacity
             className='bg-primary-500 py-4 rounded-2xl'
             onPress={handleSubmit(onSignUpPressed)}
           >
-            <Text className='text-center font-semibold'>Sign Up</Text>
+            <Text className='text-center font-semibold'>Activate</Text>
           </TouchableOpacity>
         </View>
 
@@ -136,10 +103,9 @@ const SignUpScreen = ({ navigation }) => {
           <View className='flex-1  h-[1px] bg-gray-300'></View>
         </View>
 
-        <View className='flex-row gap-2'>
-          <Text>Already have account?</Text>
-          <TouchableOpacity onPress={onSignInPressed}>
-            <Text className='font-semibold underline'>Sign in</Text>
+        <View className='flex-row gap-2 justify-center'>
+          <TouchableOpacity onPress={onActivateResendRequestPressed}>
+            <Text className='font-semibold underline'>Resend OTP</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -147,4 +113,4 @@ const SignUpScreen = ({ navigation }) => {
   )
 }
 
-export default SignUpScreen
+export default ActivateScreen

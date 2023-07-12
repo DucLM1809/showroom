@@ -18,10 +18,15 @@ const setAccessToken = async (token) => {
   await AsyncStorage.setItem(LOCAL_STORAGE_ITEMS.ACCESS_TOKEN, token)
 }
 
+const removeAccessToken = async () => {
+  await AsyncStorage.removeItem(LOCAL_STORAGE_ITEMS.ACCESS_TOKEN)
+}
+
 const TokenService = {
   getAccessToken,
   updateAccessToken,
-  setAccessToken
+  setAccessToken,
+  removeAccessToken
 }
 
 export default TokenService

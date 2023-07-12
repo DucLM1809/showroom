@@ -13,9 +13,11 @@
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
+      "bundleIdentifier": "com.minhductxqt.showroom",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.minhductxqt.showroom",
       "softwareKeyboardLayoutMode": "pan",
       "windowSoftInputMode": "adjustResize",
       "adaptiveIcon": {
@@ -25,6 +27,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "6c25b9df-1337-4146-9dbc-e6c5bfe455c7"
+      }
+    },
+    "scheme": "showroom"
   }
 }

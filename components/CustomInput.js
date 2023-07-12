@@ -1,6 +1,6 @@
 import { View, Text, TextInput, StyleSheet } from 'react-native'
 import React from 'react'
-import { Controller } from 'react-hook-form'
+import { Controller, useWatch } from 'react-hook-form'
 
 const CustomInput = ({
   control,

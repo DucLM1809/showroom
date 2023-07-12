@@ -7,11 +7,28 @@ import CustomInput from '../components/CustomInput'
 import { SCREEN } from '../constants/screen'
 
 import Entypo from 'react-native-vector-icons/Entypo'
-import { useLogin } from '../hooks/useAuth'
+import { useLogin, useLoginGoogle } from '../hooks/useAuth'
 import { showToast } from '../utils/toast'
 import { useEffect } from 'react'
+import TokenService from '../api/tokenService'
+// import * as WebBrowser from 'react-native-web-browser'
+import * as Google from 'expo-auth-session/providers/google'
+import { useState } from 'react'
+
+// WebBrowser.maybeCompleteAuthSession()
 
 const SignInScreen = ({ navigation }) => {
+  const [accessToken, setAccessToken] = useState(null)
+  const [user, setUser] = useState(null)
+  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+    clientId:
+      '209514666721-h16vs7fcfsmo2qgh1mr5j3lh4dbqurrm.apps.googleusercontent.com',
+    iosClientId:
+      '209514666721-v2ivuvjn4mrcmgdfg30eqd4hg9q3qhs1.apps.googleusercontent.com',
+    androidClientId:
+      '209514666721-mcdkssiuvjs6ie80ar3d9bqc2uqn1t9a.apps.googleusercontent.com'
+  })
+
   const {
     control,
     formState: { errors },
@@ -19,7 +36,12 @@ const SignInScreen = ({ navigation }) => {
   } = useForm()
 
   // MUTATION
-  const { handleLogin, response, error } = useLogin()
+  const { handleLogin, response: responseLogin, error } = useLogin()
+  const {
+    handleLoginGoogle,
+    response: responseLoginGoogle,
+    error: errorLoginGoogle
+  } = useLoginGoogle()
 
   const onSignInPressed = (data) => {
     handleLogin(data)
@@ -30,13 +52,30 @@ const SignInScreen = ({ navigation }) => {
   }
 
   useEffect(() => {
-    if (response) {
+    if (response?.type === 'success') {
+      handleLoginGoogle({ idToken: response.authentication?.idToken })
+    }
+  }, [response])
+
+  useEffect(() => {
+    if (responseLogin) {
       showToast('Login successfully!')
+      TokenService.setAccessToken(responseLogin.data.accessToken)
       navigation.navigate(SCREEN.HOME)
     }
 
     error && showToast(error?.response?.data?.detail)
-  }, [response, error])
+  }, [responseLogin, error])
+
+  useEffect(() => {
+    if (responseLoginGoogle) {
+      showToast('Login successfully!')
+      TokenService.setAccessToken(responseLoginGoogle.data.accessToken)
+      navigation.navigate(SCREEN.HOME)
+    }
+
+    error && showToast(errorLoginGoogle?.response?.data?.detail)
+  }, [responseLoginGoogle, errorLoginGoogle])
 
   return (
     <SafeAreaView className='bg-white flex-1'>
@@ -110,7 +149,20 @@ const SignInScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        <Text className='font-semibold underline mb-4'>Forgot password</Text>
+        <View className='flex-row justify-between'>
+          <TouchableOpacity>
+            <Text className='font-semibold underline mb-4'>
+              Forgot password?
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => navigation.navigate(SCREEN.ACTIVATE)}
+          >
+            <Text className='font-semibold underline mb-4'>
+              Activate Account
+            </Text>
+          </TouchableOpacity>
+        </View>
 
         <View className='flex-row items-center justify-center mb-4'>
           <View className='flex-1 h-[1px] bg-gray-300'></View>
@@ -118,7 +170,10 @@ const SignInScreen = ({ navigation }) => {
           <View className='flex-1  h-[1px] bg-gray-300'></View>
         </View>
 
-        <TouchableOpacity className='p-4 rounded-2xl flex-row items-center justify-between border mb-4'>
+        <TouchableOpacity
+          className='p-4 rounded-2xl flex-row items-center justify-between border mb-4'
+          onPress={() => promptAsync()}
+        >
           <Image source={require('../assets/google.png')} className='w-4 h-4' />
           <Text className='text-center'>Continue with Google</Text>
           <View></View>

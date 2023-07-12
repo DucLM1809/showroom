@@ -12,10 +12,13 @@ import { SCREEN } from './constants/screen'
 import ActivateScreen from './screens/ActivateScreen'
 import ForgotPasswordScreen from './screens/ForgotPasswordScreen'
 import ResetPasswordScreen from './screens/ResetPasswordScreen'
+import TokenService from './api/tokenService'
 
 const Stack = createNativeStackNavigator()
 
 export default function App() {
+  const isSignedIn = TokenService.getAccessToken()
+
   return (
     <Provider store={store}>
       <SafeAreaProvider>
@@ -26,19 +29,29 @@ export default function App() {
             style={{ flex: 1 }}
           > */}
           <Stack.Navigator screenOptions={{ headerShown: false }}>
-            <Stack.Screen name={SCREEN.STARTER} component={StarterScreen} />
-            <Stack.Screen name={SCREEN.SIGNIN} component={SignInScreen} />
-            <Stack.Screen name={SCREEN.SIGNUP} component={SignUpScreen} />
-            <Stack.Screen name={SCREEN.HOME} component={HomeScreen} />
-            <Stack.Screen name={SCREEN.ACTIVATE} component={ActivateScreen} />
-            <Stack.Screen
-              name={SCREEN.FORGOT_PASSWORD}
-              component={ForgotPasswordScreen}
-            />
-            <Stack.Screen
-              name={SCREEN.RESET_PASSWORD}
-              component={ResetPasswordScreen}
-            />
+            {isSignedIn ? (
+              <>
+                <Stack.Screen name={SCREEN.HOME} component={HomeScreen} />
+              </>
+            ) : (
+              <>
+                <Stack.Screen name={SCREEN.STARTER} component={StarterScreen} />
+                <Stack.Screen name={SCREEN.SIGNIN} component={SignInScreen} />
+                <Stack.Screen name={SCREEN.SIGNUP} component={SignUpScreen} />
+                <Stack.Screen
+                  name={SCREEN.ACTIVATE}
+                  component={ActivateScreen}
+                />
+                <Stack.Screen
+                  name={SCREEN.FORGOT_PASSWORD}
+                  component={ForgotPasswordScreen}
+                />
+                <Stack.Screen
+                  name={SCREEN.RESET_PASSWORD}
+                  component={ResetPasswordScreen}
+                />
+              </>
+            )}
           </Stack.Navigator>
           {/* </KeyboardAvoidingView> */}
         </NavigationContainer>

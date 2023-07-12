@@ -42,7 +42,6 @@ const ActivateScreen = ({ navigation }) => {
       setIsOtpFilled(false)
     } else {
       setIsOtpFilled(true)
-      console.log('OTP', otpCode)
       // handleSignUp(data)
       handleActivate({ ...data, otpCode })
     }

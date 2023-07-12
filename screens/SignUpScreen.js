@@ -35,7 +35,7 @@ const SignUpScreen = ({ navigation }) => {
   useEffect(() => {
     if (response) {
       showToast('Register successfully!')
-      navigation.navigate(SCREEN.SIGNIN)
+      navigation.navigate(SCREEN.ACTIVATE)
     }
     error && showToast(error?.response?.data?.detail)
   }, [response, error])

@@ -1,16 +1,18 @@
 import { View, Text, TouchableOpacity, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Image } from 'react-native'
 import { useForm, useWatch } from 'react-hook-form'
 import CustomInput from '../components/CustomInput'
 import { SCREEN } from '../constants/screen'
-import { useActivateResendRequest } from '../hooks/useAuth'
+import { useActivate, useActivateResendRequest } from '../hooks/useAuth'
+import OTPInputView from '@twotalltotems/react-native-otp-input'
 
 import { useEffect } from 'react'
 import { showToast } from '../utils/toast'
 
 import Entypo from 'react-native-vector-icons/Entypo'
+import { StyleSheet } from 'react-native'
 
 const ActivateScreen = ({ navigation }) => {
   const {
@@ -21,14 +23,29 @@ const ActivateScreen = ({ navigation }) => {
   } = useForm()
 
   const email = useWatch({ control, name: 'email' })
+  const [otpCode, setOtpCode] = useState(null)
+  const [isOtpFilled, setIsOtpFilled] = useState(true)
 
   // MUTATION
   const { handleActivateResendRequest, response, error } =
     useActivateResendRequest()
 
-  const onSignUpPressed = (data) => {
+  const {
+    handleActivate,
+    response: responseActivate,
+    error: errorActivate
+  } = useActivate()
+
+  const onActivatePressed = (data) => {
     // validate user
-    handleSignUp(data)
+    if (!otpCode) {
+      setIsOtpFilled(false)
+    } else {
+      setIsOtpFilled(true)
+      console.log('OTP', otpCode)
+      // handleSignUp(data)
+      handleActivate({ ...data, otpCode })
+    }
   }
 
   const onActivateResendRequestPressed = () => {
@@ -40,9 +57,17 @@ const ActivateScreen = ({ navigation }) => {
       showToast('OTP has been resent to your email!')
     }
 
-    console.log(error?.toString())
-    // error && showToast(error?.response?.data?.detail)
+    error && showToast(error?.response?.data?.detail)
   }, [response, error])
+
+  useEffect(() => {
+    if (responseActivate) {
+      showToast('Activate Account Successfully!')
+      navigation.navigate(SCREEN.SIGNIN)
+    }
+
+    errorActivate && showToast(errorActivate?.response?.data?.detail)
+  }, [responseActivate, errorActivate])
 
   return (
     <SafeAreaView className='bg-white flex-1'>
@@ -89,9 +114,31 @@ const ActivateScreen = ({ navigation }) => {
             />
           </View>
 
+          <View className='mb-4'>
+            <Text className='font-semibold mb-2'>
+              OTP <Text className='text-red-400'>*</Text>
+            </Text>
+
+            <OTPInputView
+              style={{ height: 200 }}
+              pinCount={5}
+              autoFocusOnLoad
+              onCodeFilled={(code) => {
+                setOtpCode(code)
+              }}
+              codeInputHighlightStyle={styles.underlineStyleHighLighted}
+            />
+
+            {!isOtpFilled && (
+              <Text className='font-semibold mb-2'>
+                <Text className='text-red-400 text-xs'>OTP isn't filled</Text>
+              </Text>
+            )}
+          </View>
+
           <TouchableOpacity
             className='bg-primary-500 py-4 rounded-2xl'
-            onPress={handleSubmit(onSignUpPressed)}
+            onPress={handleSubmit(onActivatePressed)}
           >
             <Text className='text-center font-semibold'>Activate</Text>
           </TouchableOpacity>
@@ -114,3 +161,18 @@ const ActivateScreen = ({ navigation }) => {
 }
 
 export default ActivateScreen
+
+const styles = StyleSheet.create({
+  borderStyleBase: {
+    width: 30,
+    height: 45
+  },
+
+  borderStyleHighLighted: {
+    borderColor: '#03DAC6'
+  },
+
+  underlineStyleHighLighted: {
+    borderColor: '#03DAC6'
+  }
+})

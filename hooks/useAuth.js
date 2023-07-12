@@ -97,3 +97,22 @@ export const useActivateResendRequest = () => {
 
   return { response, error, handleActivateResendRequest }
 }
+
+export const useActivate = () => {
+  const [error, setError] = useState()
+  const [response, setResponse] = useState()
+
+  const handleActivate = async (body) => {
+    try {
+      const res = await AxiosPost('auth/users/activate', body)
+
+      if (res) {
+        setResponse(res)
+      }
+    } catch (error) {
+      setError(error)
+    }
+  }
+
+  return { response, error, handleActivate }
+}

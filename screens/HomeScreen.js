@@ -8,6 +8,7 @@ import { showToast } from '../utils/toast'
 import { SCREEN } from '../constants/screen'
 import TokenService from '../api/tokenService'
 import { Text } from 'react-native'
+import { setIsSignedIn } from '../slices/navSlice'
 
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch()
@@ -25,9 +26,11 @@ const HomeScreen = ({ navigation }) => {
     }
 
     if (response?.status === 204) {
-      navigation.navigate(SCREEN.SIGNIN)
-      TokenService.removeAccessToken()
-      showToast('Logout Successfully!')
+      TokenService.removeAccessToken().then(() => {
+        navigation.navigate(SCREEN.SIGNIN)
+        showToast('Logout Successfully!')
+        dispatch(setIsSignedIn(false))
+      })
     }
   }, [response, error])
 

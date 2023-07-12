@@ -14,19 +14,17 @@ import TokenService from '../api/tokenService'
 // import * as WebBrowser from 'react-native-web-browser'
 import * as Google from 'expo-auth-session/providers/google'
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { setIsSignedIn } from '../slices/navSlice'
 
 // WebBrowser.maybeCompleteAuthSession()
 
 const SignInScreen = ({ navigation }) => {
-  const [accessToken, setAccessToken] = useState(null)
-  const [user, setUser] = useState(null)
+  const dispatch = useDispatch()
   const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId:
-      '209514666721-h16vs7fcfsmo2qgh1mr5j3lh4dbqurrm.apps.googleusercontent.com',
-    iosClientId:
-      '209514666721-v2ivuvjn4mrcmgdfg30eqd4hg9q3qhs1.apps.googleusercontent.com',
-    androidClientId:
-      '209514666721-mcdkssiuvjs6ie80ar3d9bqc2uqn1t9a.apps.googleusercontent.com'
+    clientId: process.env.GOOGLE_LOGIN_WEB_CLIENT_ID,
+    iosClientId: process.env.GOOGLE_LOGIN_IOS_CLIENT_ID,
+    androidClientId: process.env.GOOGLE_LOGIN_ANDROID_CLIENT_ID
   })
 
   const {
@@ -59,21 +57,25 @@ const SignInScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (responseLogin) {
-      showToast('Login successfully!')
-      TokenService.setAccessToken(responseLogin.data.accessToken)
-      navigation.navigate(SCREEN.HOME)
+      TokenService.setAccessToken(responseLogin.data.accessToken).then(() => {
+        dispatch(setIsSignedIn(true))
+        navigation.navigate(SCREEN.HOME)
+        showToast('Login successfully!')
+      })
     }
-
-    console.log('ERROR', error)
 
     error && showToast(error?.response?.data?.detail)
   }, [responseLogin, error])
 
   useEffect(() => {
     if (responseLoginGoogle && !errorLoginGoogle) {
-      showToast('Login successfully!')
-      TokenService.setAccessToken(responseLoginGoogle.data.accessToken)
-      navigation.navigate(SCREEN.HOME)
+      TokenService.setAccessToken(responseLoginGoogle.data.accessToken).then(
+        () => {
+          dispatch(setIsSignedIn(true))
+          navigation.navigate(SCREEN.HOME)
+          showToast('Login successfully!')
+        }
+      )
     }
 
     errorLoginGoogle && showToast(errorLoginGoogle?.response?.data?.detail)

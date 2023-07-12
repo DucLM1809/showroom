@@ -6,7 +6,8 @@ import {
   Text as BaseText,
   TextInput as BaseTextInput,
   TouchableOpacity as BaseTouchableOpacity,
-  View as BaseView
+  View as BaseView,
+  Modal as BaseModal
 } from 'react-native'
 
 
@@ -20,6 +21,7 @@ const SafeAreaView = styled(BaseSafeAreaView)
 const Image = styled(BaseImage)
 const TouchableOpacity = styled(BaseTouchableOpacity)
 const TextInput = styled(BaseTextInput)
+const Modal = styled(BaseModal)
 
 // const KeyboardAwareScrollView = styled(BaseKeyboardAwareScrollView)
 
@@ -32,5 +34,6 @@ export {
   Image,
   TouchableOpacity,
   TextInput,
+  Modal 
 //   KeyboardAwareScrollView
 }

@@ -1,16 +1,19 @@
 import { View, Text, FlatList, Animated, Dimensions } from "react-native";
-import React from "react";
+import React,{useState} from "react";
 import {
   SafeAreaView,
   withSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { Image, TouchableOpacity } from "../tailwinds/tailwindComponent";
 import Icons from "@expo/vector-icons/MaterialIcons";
+import ModalBooking from "../components/ModalBooking";
 
 const DetailScreen = ({ route, navigation }) => {
   const width = Dimensions.get("window").width;
   const product = route.params.product;
   const scrollX = new Animated.Value(0);
+  const [modalVisible,setModalVisible] = useState(false)
+  const [bookingProduct, setBookingProduct] = useState({})
 
   const renderProduct = ({ item, index }) => {
     return (
@@ -81,13 +84,17 @@ const DetailScreen = ({ route, navigation }) => {
           </View>
           <Text className="text-white text-lg ">Purchase</Text>
         </TouchableOpacity>
-        <TouchableOpacity className=" flex-row items-center bg-[#000000] rounded-r-full py-2 pr-2 pl-5">
+        <TouchableOpacity className=" flex-row items-center bg-[#000000] rounded-r-full py-2 pr-2 pl-5" onPress={()=>{
+          setModalVisible(true)
+          setBookingProduct(product)
+        }}>
           <Text className="text-white text-lg mr-2">Booking</Text>
           <View className=" bg-white rounded-full p-2">
             <Icons name="pending-actions" size={30} />
           </View>
         </TouchableOpacity>
         </View>
+        <ModalBooking modalVisible={modalVisible} setModalVisible={setModalVisible} product={bookingProduct} />
       </View>
     </SafeAreaView>
   );

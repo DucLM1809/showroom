@@ -17,12 +17,15 @@ import { categories } from "../mockData/category";
 import TagCate from "../components/TagCate";
 import MasonryList from "@react-native-seoul/masonry-list";
 import CardCate from "../components/CardCate";
-import { TextInput } from "../tailwinds/tailwindComponent";
+import { Modal, TextInput } from "../tailwinds/tailwindComponent";
+import ModalBooking from "../components/ModalBooking";
 
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const { colors } = useTheme();
   const [selectedCate, setSelectedCate] = useState(categories[0].id);
+  const [modalVisible,setModalVisible] = useState(false)
+  const [bookingProduct, setBookingProduct] = useState({})
 
   return (
     <ScrollView>
@@ -90,7 +93,7 @@ const HomeScreen = ({ navigation }) => {
               keyExtractor={(item) => item.id}
               numColumns={2}
               showsVerticalScrollIndicator={false}
-              renderItem={({ item,i }) => <CardCate product={item} i={i} navigation={navigation}/>}
+              renderItem={({ item,i }) => <CardCate setBookingProduct={setBookingProduct} setModalVisible={setModalVisible} product={item} i={i} navigation={navigation}/>}
               onEndReachedThreshold={0.1}
               
             />
@@ -98,6 +101,7 @@ const HomeScreen = ({ navigation }) => {
           </ScrollView>
           </View>
         </View>
+        <ModalBooking modalVisible={modalVisible} setModalVisible={setModalVisible} product={bookingProduct} />
       </SafeAreaView>
     </ScrollView>
   );

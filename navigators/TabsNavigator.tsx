@@ -5,6 +5,8 @@ import HomeScreen from '../screens/HomeScreen';
 import CartScreen from '../screens/CartScreen';
 import Icons from "@expo/vector-icons/MaterialIcons"
 import FavoriteScreen from '../screens/FavoriteScreen';
+import BookingScreen from '../screens/BookingScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 export type TabsStackParamList = {
     Home: undefined;
@@ -24,13 +26,13 @@ const TabsNavigator = () => {
         <Tab.Screen name='WishList' component={FavoriteScreen} options={{ headerShown:false, tabBarIcon(props){
           return <Icons name='favorite' {...props}/>
         }}} />
-        <Tab.Screen name='Booking' component={CartScreen} options={{ headerShown:false, tabBarIcon(props){
+        <Tab.Screen name='Booking' component={BookingScreen} options={{ headerShown:false, tabBarIcon(props){
           return <Icons name='pending-actions' {...props}/>
         }}} />
         <Tab.Screen name='Purchase' component={CartScreen} options={{ headerShown:false, tabBarIcon(props){
           return <Icons name='payment' {...props}/>
         }}} />
-        <Tab.Screen name='Profile' component={HomeScreen} options={{ headerShown:false, tabBarIcon(props){
+        <Tab.Screen name='Profile' component={ProfileScreen} options={{ headerShown:false, tabBarIcon(props){
           return <Icons name='person' {...props}/>
         }}} />
     </Tab.Navigator>

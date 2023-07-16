@@ -2,22 +2,18 @@ import { useEffect, useState } from 'react'
 import AxiosGet from '../api/axiosGet'
 import AxiosPost from '../api/axiosPost'
 import AxiosPut from '../api/axiosPut'
-import { ORDER_OPTION } from '../constants/post'
+import AxiosDelete from '../api/axiosDelete'
 
 export const usePosts = () => {
   const [loading, setLoading] = useState()
   const [error, setError] = useState()
   const [response, setResponse] = useState()
 
-  const handleGetPosts = async (params) => {
+  const handleGetPosts = async (params, query) => {
+    console.log(query ? '?' + query : '')
     setLoading(true)
     try {
-      const res = await AxiosGet('posts/me', {
-        ...params,
-        limit: params?.limit > 100 ? 100 : params.limit,
-        offset: 0,
-        order_by: ORDER_OPTION.NEWEST
-      })
+      const res = await AxiosGet(`posts/me${query ? '?' + query : ''}`, params)
 
       if (res) {
         setResponse(res?.data)
@@ -169,4 +165,29 @@ export const useRequestDeletionPost = () => {
   }
 
   return { loading, response, error, handleRequestDeletionPost }
+}
+
+export const useDeletePost = () => {
+  const [error, setError] = useState()
+  const [response, setResponse] = useState()
+  const [loading, setLoading] = useState()
+
+  const handleDeletePost = async (id) => {
+    try {
+      setLoading(true)
+      const res = await AxiosDelete(`posts/${id}`)
+
+      if (res) {
+        setResponse(res)
+        setError(null)
+        setLoading(false)
+      }
+    } catch (error) {
+      setResponse(null)
+      setError(error)
+      setLoading(false)
+    }
+  }
+
+  return { loading, response, error, handleDeletePost }
 }

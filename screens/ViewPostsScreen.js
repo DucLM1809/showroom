@@ -106,7 +106,7 @@ const ViewPostsScreen = ({ navigation }) => {
         <>
           <Post
             navigation={navigation}
-            key={item?.id}
+            id={item?.id}
             item={item}
             handleGetPosts={handleGetPosts}
           />

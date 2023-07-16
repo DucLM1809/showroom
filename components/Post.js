@@ -13,11 +13,11 @@ import GestureRecognizer from 'react-native-swipe-gestures'
 import RenderHtml from 'react-native-render-html'
 import { useWindowDimensions } from 'react-native'
 
-const Post = ({ navigation, item, handleGetPosts }) => {
+const Post = ({ navigation, item, handleGetPosts, id }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const { width } = useWindowDimensions()
   return (
-    <View className='bg-white my-2 mb-0 py-3'>
+    <View key={id} className='bg-white my-2 mb-0 py-3'>
       <View className='flex-row justify-between px-4'>
         <View className='flex-row gap-2 items-center'>
           <Image

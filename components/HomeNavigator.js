@@ -10,11 +10,11 @@ const Tab = createBottomTabNavigator()
 const HomeNavigator = () => {
   return (
     <Tab.Navigator
-      initialRouteName={SCREEN.HOME}
+      initialRouteName={SCREEN.VIEW_POST}
       screenOptions={{ headerShown: false }}
     >
       <Tab.Screen
-        name={SCREEN.HOME}
+        name={SCREEN.VIEW_POST}
         component={ViewPostsScreen}
         options={{
           title: 'Home',
@@ -23,6 +23,16 @@ const HomeNavigator = () => {
           )
         }}
       />
+      {/* <Tab.Screen
+        name={SCREEN.HOME}
+        component={ViewPostsScreen}
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ size, color }) => (
+            <MaterialCommunityIcons name='home' size={size} color={color} />
+          )
+        }}
+      /> */}
     </Tab.Navigator>
   )
 }

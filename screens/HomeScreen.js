@@ -1,22 +1,26 @@
-import { SafeAreaView } from 'react-native'
+import { SafeAreaView, View, Text } from 'react-native'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { TouchableOpacity } from 'react-native'
-import { useLogout } from '../hooks/useAuth'
+import { useLogout, useProfile } from '../hooks/useAuth'
 import { useEffect } from 'react'
 import { showToast } from '../utils/toast'
 import { SCREEN } from '../constants/screen'
 import TokenService from '../api/tokenService'
-import { Text } from 'react-native'
 import { setIsSignedIn } from '../slices/navSlice'
 import HomeNavigator from '../components/HomeNavigator'
 import Post from '../components/Post'
+import RootNavigator from './adminScreens/navigator/RootNavigator'
+import Spinner from 'react-native-loading-spinner-overlay'
 
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch()
 
   // MUTATION
   const { handleLogout, error, response } = useLogout()
+
+  // QUERY
+  const { loading, response: responseProfile } = useProfile()
 
   const handleLogoutPressed = () => {
     handleLogout()
@@ -42,7 +46,17 @@ const HomeScreen = ({ navigation }) => {
         <Text>LOGOUT</Text>
       </TouchableOpacity>
       <Post /> */}
-      <HomeNavigator />
+      {loading ? (
+        <Spinner visible={loading} />
+      ) : (
+        <>
+          {responseProfile?.role === 'ADMIN' ? (
+            <RootNavigator />
+          ) : (
+            <HomeNavigator />
+          )}
+        </>
+      )}
     </SafeAreaView>
   )
 }

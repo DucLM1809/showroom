@@ -15,5 +15,12 @@ export const SCREEN = Object.freeze({
   WISHLIST: 'WishListScreen',
   BOOKING: 'BookingScreen',
   PURCHASE: 'PurchaseScreen',
-  DETAILS: 'DetailsScreen'
+  DETAILS: 'DetailsScreen',
+  POSTS_MANAGE: 'PostManageScreen',
+  POST_DETAIL: 'PostDetailScreen',
+  ADMIN_HOME: 'AdminHomeScreen',
+  BOOKING_MANAGE: 'BookingManageScreen',
+  TRANSACTION_MANAGE: 'TransactionManageScreen',
+  POSTS_MANAGE: 'PostsManageScreen',
+  USERS_MANAGE: 'UsersManageScreen'
 })

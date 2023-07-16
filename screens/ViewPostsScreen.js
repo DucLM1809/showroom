@@ -9,7 +9,6 @@ import { usePosts } from '../hooks/usePost'
 import { useDebounce } from '../hooks/useDebounce'
 import { SCREEN } from '../constants/screen'
 import Spinner from 'react-native-loading-spinner-overlay'
-import { ORDER_OPTION } from '../constants/post'
 
 const ViewPostsScreen = ({ navigation }) => {
   const isCloseToBottom = ({
@@ -41,7 +40,6 @@ const ViewPostsScreen = ({ navigation }) => {
   }, [])
 
   const handleLoadMore = () => {
-    console.log('LOAD MORE')
     !loading && setLimit((prev) => prev + 10)
   }
 
@@ -101,7 +99,7 @@ const ViewPostsScreen = ({ navigation }) => {
         />
       </View>
 
-      <Spinner visible={loading} textContent={'Loading...'} />
+      <Spinner visible={loading || !response} textContent={'Loading...'} />
       {response?.map((item) => (
         <>
           <Post

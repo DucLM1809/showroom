@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import { useState } from 'react'
 import AxiosPost from '../api/axiosPost'
 import AxiosDelete from '../api/axiosDelete'
+import AxiosGet from '../api/axiosGet'
+import AxiosPut from '../api/axiosPut'
 
 export const useLoginGoogle = () => {
   const [error, setError] = useState()
@@ -169,4 +171,58 @@ export const useResetPassword = () => {
   }
 
   return { response, error, handleResetPassword }
+}
+
+export const useProfile = () => {
+  const [loading, setLoading] = useState()
+  const [error, setError] = useState()
+  const [response, setResponse] = useState()
+
+  const handleGetProfile = async () => {
+    setLoading(true)
+    try {
+      const res = await AxiosGet('users/me')
+
+      if (res) {
+        setResponse(res?.data)
+        setError(null)
+        setLoading(false)
+      }
+    } catch (error) {
+      setLoading(false)
+      setResponse(null)
+      setError(error)
+    }
+  }
+
+  useEffect(() => {
+    handleGetProfile()
+  }, [])
+
+  return { response, error, loading, handleGetProfile }
+}
+
+export const useUpdateProfile = () => {
+  const [error, setError] = useState()
+  const [response, setResponse] = useState()
+  const [loading, setLoading] = useState()
+
+  const handleUpdateProfile = async (body) => {
+    try {
+      setLoading(true)
+      const res = await AxiosPut('users/me', body)
+
+      if (res) {
+        setResponse(res)
+        setError(null)
+        setLoading(false)
+      }
+    } catch (error) {
+      setResponse(null)
+      setError(error)
+      setLoading(false)
+    }
+  }
+
+  return { loading, response, error, handleUpdateProfile }
 }

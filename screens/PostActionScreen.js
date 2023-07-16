@@ -63,13 +63,33 @@ const PostActionScreen = ({
           onPress={() => setModalVisible(false)}
           className='mb-4 flex-row justify-end'
         >
-          <MaterialIcons name='close' size={30} color={'#b8bbbf'} />
+          <MaterialIcons
+            name='close'
+            size={20}
+            style={{
+              flexShrink: 10,
+              color: '#777777',
+              padding: 12,
+              backgroundColor: '#F0F0F3',
+              borderRadius: 200
+            }}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           className='flex-row items-center gap-4 mb-4'
           onPress={handleEditPress}
         >
-          <MaterialIcons name='edit' size={25} color={'#b8bbbf'} />
+          <MaterialIcons
+            name='edit'
+            size={20}
+            style={{
+              flexShrink: 10,
+              color: '#777777',
+              padding: 12,
+              backgroundColor: '#F0F0F3',
+              borderRadius: 200
+            }}
+          />
           <Text className='text-xl'>Edit</Text>
         </TouchableOpacity>
 

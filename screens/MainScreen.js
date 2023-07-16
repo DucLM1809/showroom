@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux'
 import { selectIsSignedIn } from '../slices/navSlice'
 import CreatePostScreen from './CreatePostScreen'
 import EditPostScreen from './EditPostScreen'
+import EditProfileScreen from './EditProfileScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -29,6 +30,10 @@ const MainScreen = () => {
             component={CreatePostScreen}
           />
           <Stack.Screen name={SCREEN.EDIT_POST} component={EditPostScreen} />
+          <Stack.Screen
+            name={SCREEN.EDIT_PROFILE}
+            component={EditProfileScreen}
+          />
         </>
       ) : (
         <Stack.Group>

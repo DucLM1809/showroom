@@ -218,6 +218,12 @@ const EditProfileScreen = ({ navigation }) => {
                 control={control}
                 name='phoneNumber'
                 keyboardType={'numeric'}
+                rules={{
+                  pattern: {
+                    value: /(84|0[3|5|7|8|9])+([0-9]{8})\b/g,
+                    message: 'Invalid phone number format.'
+                  }
+                }}
               />
             </View>
 

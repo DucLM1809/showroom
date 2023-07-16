@@ -4,14 +4,13 @@ import {
   BottomTabScreenProps,
   createBottomTabNavigator,
 } from "@react-navigation/bottom-tabs";
-import HomeScreen from "../../HomeScreen";
 import Icons from "@expo/vector-icons/MaterialIcons";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { RootStackScreenProps } from "./RootNavigator";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import CustomBottomTabs from "../components/CustomBottomTabs";
 import HomePage from "../Homepage";
-import OrdersManage from "../OrdersManage";
+import BookingsMoanage from "../BookingsManage";
 import TransactionManage from "../TransManage";
 import PostsManage from "../PostsManage";
 import UsersManage from "../UsersManage";
@@ -24,7 +23,7 @@ export type TabsStackParamList = {
 
 export type HomeStackParamList = {
   Homepage: undefined;
-  OrdersManage: undefined;
+  BookingsManage: undefined;
   TransManage: undefined;
   PostsManage: undefined;
   UsersManage: undefined;
@@ -62,7 +61,7 @@ const MyHomeStack = () => {
       })}
     >
       <HomeStack.Screen name="Homepage" component={HomePage} />
-      <HomeStack.Screen name="OrdersManage" component={OrdersManage} />
+      <HomeStack.Screen name="BookingsManage" component={BookingsMoanage} />
       <HomeStack.Screen name="TransManage" component={TransactionManage} />
       <HomeStack.Screen name="PostsManage" component={MyPostStack} />
       <HomeStack.Screen name="UsersManage" component={UsersManage} />

@@ -1,60 +1,46 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../../slices/rootReducer";
+
 import {
-  fetchUsersRequest,
-  fetchUsersSuccess,
-  fetchUsersFailure,
-} from "../../../slices/usersSlice";
-import axios from "axios";
-import { StyledView, StyledImage, StyledText } from "../components/styled";
+  StyledView,
+  StyledImage,
+  StyledText,
+  StyledTouchableOpacity,
+} from "../components/styled";
+import { updateUserStatus, useGetUsers } from "../../../hooks/useAdmin";
 
 interface User {
-  id: number;
-  name: string;
-  address: {
-    street: string;
-  };
-  phone: string;
+  id: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  avatarUrl: string;
+  role: "ADMIN" | "USER";
+  isActive: boolean;
+  isActivated: boolean;
 }
 
 const UsersManage = () => {
-  const dispatch = useDispatch();
-  const users = useSelector((state: RootState) => state.user.users);
+  const [users, setUsers] = useState<User[]>([]);
+  const [activeButton, setActiveButton] = useState<string>("Activated");
 
-  const isLoading = useSelector((state: RootState) => state.user.isLoading);
-  const error = useSelector((state: RootState) => state.user.error);
-  const [activeButton, setActiveButton] = useState<string>("owners");
-
+  const { response, error } = useGetUsers();
   useEffect(() => {
-    dispatch(fetchUsersRequest());
+    if (response) {
+      const filterRes = response.filter((res) => res.role != "ADMIN");
+      setUsers(filterRes);
+    }
+  }, [response]);
 
-    axios
-      .get("https://jsonplaceholder.typicode.com/users")
-      .then((response) => {
-        dispatch(fetchUsersSuccess(response.data));
-      })
-      .catch((error) => {
-        dispatch(fetchUsersFailure(error.message));
-      });
-  }, [dispatch]);
-
-  if (isLoading) {
-    return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
+  const handleUpdateStatus = async (id, status) => {
+    await updateUserStatus(id, !status);
+    const updatedUsers = users.map((user) =>
+      user.id === id ? { ...user, isActive: !status } : user
     );
-  }
-
-  if (error) {
-    return (
-      <View>
-        <Text>Error: {error}</Text>
-      </View>
-    );
-  }
+    setUsers(updatedUsers);
+  };
 
   const CardUser = ({ user }: { user: User }) => {
     return (
@@ -74,7 +60,9 @@ const UsersManage = () => {
       >
         <StyledImage
           source={{
-            uri: "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/322115926_1204139193874845_7113739806147074311_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=IGJi6I88w_8AX_Q8iFL&_nc_ht=scontent.fsgn8-4.fna&oh=00_AfDBM1tnOOCUdAtAm_SWmr318JP7oNtHGKc8gGISpRo9bA&oe=649E546A",
+            uri: user.avatarUrl
+              ? user.avatarUrl
+              : "https://img.freepik.com/free-icon/user_318-159711.jpg?w=2000",
           }}
           className="w-32 h-32 rounded-full align-middle m-5"
         />
@@ -83,15 +71,29 @@ const UsersManage = () => {
             numberOfLines={1}
             className="font-bold text-xl truncate ... max-w-[80%]"
           >
-            {user.name}
+            {user.fullName ? user.fullName : "Anonymous"}
           </StyledText>
           <StyledText
             numberOfLines={1}
-            className="font-medium text-lg truncate ... max-w-[80%]"
+            className="font-medium text-lg truncate ... max-w-[70%]"
           >
-            {user.address.street} Street
+            {user.email}
           </StyledText>
-          <StyledText className="text-base">{user.phone}</StyledText>
+          <StyledTouchableOpacity
+            onPress={() => {
+              handleUpdateStatus(user.id, user.isActive);
+            }}
+          >
+            <StyledView
+              className={`${
+                user.isActive === true ? "bg-red-500" : "bg-blue-500"
+              }  py-2 items-center rounded-lg p-2 w-28`}
+            >
+              <StyledText className="text-base font-semibold text-white">
+                {user.isActive ? "Disable" : "Enable"}
+              </StyledText>
+            </StyledView>
+          </StyledTouchableOpacity>
         </StyledView>
       </StyledView>
     );
@@ -100,50 +102,52 @@ const UsersManage = () => {
   return (
     <ScrollView>
       <StyledView className="flex flex-row mx-2 mt-5">
-        <TouchableOpacity onPress={() => setActiveButton("owners")}>
+        <TouchableOpacity onPress={() => setActiveButton("Activated")}>
           <StyledView
             className={`bg-${
-              activeButton === "owners" ? "blue" : "white"
+              activeButton === "Activated" ? "blue" : "white"
             }-500 px-4 py-2 align-middle rounded-3xl mx-3 border border-blue-500`}
           >
             <StyledText
               className={`${
-                activeButton === "owners" ? "text-white" : "text-blue-500"
+                activeButton === "Activated" ? "text-white" : "text-blue-500"
               } text-xl font-normal`}
             >
-              Owners
+              Active
             </StyledText>
           </StyledView>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setActiveButton("customers")}>
+        <TouchableOpacity onPress={() => setActiveButton("unActivated")}>
           <StyledView
             className={`${
-              activeButton === "customers" ? "bg-blue-500" : "bg-white"
+              activeButton === "unActivated" ? "bg-blue-500" : "bg-white"
             } px-4 py-2 align-middle rounded-3xl mx-3 border border-blue-500`}
           >
             <StyledText
               className={`${
-                activeButton === "customers" ? "text-white" : "text-blue-500"
+                activeButton === "unActivated" ? "text-white" : "text-blue-500"
               } text-xl font-normal`}
             >
-              Customers
+              unActive
             </StyledText>
           </StyledView>
         </TouchableOpacity>
       </StyledView>
-      {activeButton === "owners" && (
+      {activeButton === "Activated" && (
         <>
-          {users
-            .filter((user) => user.id % 2 !== 0)
-            .map((filteredUser) => (
-              <CardUser user={filteredUser} key={filteredUser.id} />
-            ))}
+          <>
+            {users
+              .filter((user) => user.isActive === true)
+              .map((filteredUser) => (
+                <CardUser user={filteredUser} key={filteredUser.id} />
+              ))}
+          </>
         </>
       )}
-      {activeButton === "customers" && (
+      {activeButton === "unActivated" && (
         <>
           {users
-            .filter((user) => user.id % 2 === 0)
+            .filter((user) => user.isActive === false)
             .map((filteredUser) => (
               <CardUser user={filteredUser} key={filteredUser.id} />
             ))}

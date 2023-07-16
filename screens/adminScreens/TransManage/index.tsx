@@ -1,74 +1,87 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyledView,
   StyledText,
   StyledTouchableOpacity,
   StyledImage,
 } from "../components/styled";
-import { useSelector } from "react-redux";
-import { RootState } from "../../../slices/rootReducer";
-import axios from "axios";
+import { useGetPayments, useGetUsers } from "../../../hooks/useAdmin";
+import Popover, { PopoverPlacement } from "react-native-popover-view";
 
-interface AnnualReports {
-  fiscalDateEnding: string;
-  grossProfit: string;
-  reportedCurrency: string;
+interface User {
+  email: string;
+  firstName: string;
+  lastName: string;
+  fullName: string;
+  avatarUrl: string;
 }
 
-interface Transactions {
-  symbol: string;
-  annualReports: AnnualReports[];
+interface Post {
+  title: string;
+  imageUrls: string[];
+}
+
+interface Payment {
+  id: string;
+  userId: string;
+  user: User;
+  postId: string;
+  post: Post;
+  amount: number;
 }
 
 const TransactionManage = () => {
-  const users = useSelector((state: RootState) => state.user.users);
-  const [transactions, setTransactions] = useState<Transactions | undefined>(
-    undefined
-  );
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        "https://www.alphavantage.co/query?function=INCOME_STATEMENT&symbol=IBM&apikey=demo"
-      );
-      const data = response.data;
-      setTransactions(data);
-    } catch (error) {
-      console.error(error);
+  const [payments, setPayments] = useState<Payment[]>([]);
+
+  const { response, error } = useGetPayments();
+  useEffect(() => {
+    if (response) {
+      setPayments(response);
     }
-  };
+  }, [response]);
 
-  fetchData();
-
-  const CardTransactions = ({
-    transaction,
-  }: {
-    transaction: AnnualReports;
-  }) => {
+  const CardTransactions = ({ payment }: { payment: Payment }) => {
     return (
       <TouchableOpacity>
         <StyledView className="flex flex-row">
           <StyledImage
             source={{
-              uri: "https://play-lh.googleusercontent.com/n109V9dur2NFwV7Fbr8lwlU-isXRR0K7Q-pvp1LCyRwTVP2DfJaR-dklmXzK0MhQuz9E=w240-h480-rw",
+              uri: payment.post.imageUrls
+                ? payment.post.imageUrls[0]
+                : "https://autopro8.mediacdn.vn/134505113543774208/2023/2/7/lamborghini-invencible-4-16756850516461900043085-1675733308714-167573330968768803893.jpg",
             }}
             className="w-16 h-16 rounded-3xl align-middle mt-5 mb-2 "
           />
-          <StyledView className="flex justify-center mx-5 basis-3/7">
-            <StyledText className="text-lg font-semibold">
-              Mercedes-Benz
-            </StyledText>
+          <StyledView className="flex justify-center mx-3 basis-2/7">
             <StyledView>
-              <StyledText>{transaction?.fiscalDateEnding}</StyledText>
+              <StyledText className="text-lg font-semibold">
+                {payment.post.title}
+              </StyledText>
+            </StyledView>
+
+            <StyledView>
+              <StyledText>{payment.user.email}</StyledText>
             </StyledView>
           </StyledView>
           <StyledView className="flex justify-center ">
-            <StyledText
-              numberOfLines={1}
-              className="text-xl font-semibold w-[80%] truncate ... pl-5"
+            <Popover
+              placement={PopoverPlacement.BOTTOM}
+              from={
+                <TouchableOpacity>
+                  <StyledText
+                    numberOfLines={1}
+                    className="text-lg font-semibold w-[80%] truncate ... pl-2"
+                  >
+                    ${payment.amount}
+                  </StyledText>
+                </TouchableOpacity>
+              }
             >
-              ${transaction?.grossProfit}
-            </StyledText>
+              <StyledText numberOfLines={1} className="text-lg font-semibold ">
+                ${payment.amount}
+              </StyledText>
+            </Popover>
           </StyledView>
         </StyledView>
       </TouchableOpacity>
@@ -78,28 +91,29 @@ const TransactionManage = () => {
   return (
     <StyledView className="w-[90%] m-[5%] flex-1">
       <StyledText className="text-xl font-bold pt-4">
-        {" "}
         Currently Users
       </StyledText>
-      <ScrollView horizontal>
-        {users.map((user) => (
-          <StyledView className="items-center mr-8 mb-6">
+      <ScrollView horizontal style={{ maxHeight: 140 }}>
+        {payments.map((payment) => (
+          <StyledView className="items-center mr-8">
             <StyledImage
               source={{
-                uri: "https://scontent.fsgn8-4.fna.fbcdn.net/v/t39.30808-6/322115926_1204139193874845_7113739806147074311_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=IGJi6I88w_8AX_Q8iFL&_nc_ht=scontent.fsgn8-4.fna&oh=00_AfDBM1tnOOCUdAtAm_SWmr318JP7oNtHGKc8gGISpRo9bA&oe=649E546A",
+                uri: payment?.user?.avatarUrl
+                  ? payment?.user?.avatarUrl
+                  : "https://img.freepik.com/free-icon/user_318-159711.jpg?w=2000",
               }}
               className="w-20 h-20 rounded-xl align-middle  mt-5 mb-2 "
             />
             <StyledText numberOfLines={1} className="font-medium">
-              {user.username}
+              {payment.user.fullName ? payment.user.fullName : "Anonymous"}
             </StyledText>
           </StyledView>
         ))}
       </ScrollView>
       <StyledText className="text-xl font-bold pt-4"> Transactions</StyledText>
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {transactions?.annualReports.map((report) => {
-          return <CardTransactions transaction={report} />;
+        {payments?.map((payment) => {
+          return <CardTransactions payment={payment} />;
         })}
       </ScrollView>
     </StyledView>

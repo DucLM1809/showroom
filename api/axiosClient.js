@@ -3,7 +3,7 @@ import AxiosPut from './axiosPut'
 import TokenService from './tokenService'
 
 const axiosClient = axios.create({
-  baseURL: `${process.env.API_BASE_URL}`,
+  baseURL: `https://showroom.ttq186.dev`,
   headers: {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*'

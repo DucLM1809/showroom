@@ -10,6 +10,7 @@ import Entypo from 'react-native-vector-icons/Entypo'
 import { useLogin } from '../hooks/useAuth'
 import { showToast } from '../utils/toast'
 import { useEffect } from 'react'
+import TokenService from '../api/tokenService'
 
 const SignInScreen = ({ navigation }) => {
   const {
@@ -17,6 +18,7 @@ const SignInScreen = ({ navigation }) => {
     formState: { errors },
     handleSubmit
   } = useForm()
+
 
   // MUTATION
   const { handleLogin, response, error } = useLogin()
@@ -31,8 +33,9 @@ const SignInScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (response) {
+
       showToast('Login successfully!')
-      navigation.navigate(SCREEN.HOME)
+      navigation.navigate('TabsStack')
     }
 
     error && showToast(error?.response?.data?.detail)

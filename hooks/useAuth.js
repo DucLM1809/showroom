@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { useState } from 'react'
 import AxiosPost from '../api/axiosPost'
+import TokenService from '../api/tokenService'
+import AxiosGet from '../api/axiosGet'
 
 export const useLogin = () => {
   const [error, setError] = useState()
@@ -11,6 +13,8 @@ export const useLogin = () => {
       const res = await AxiosPost('auth/users/tokens', body)
 
       if (res) {
+        const accessToken = res.data.accessToken
+        await TokenService.setAccessToken(accessToken)
         setResponse(res)
       }
     } catch (error) {
@@ -39,3 +43,4 @@ export const useSignUp = () => {
 
   return { response, error, handleSignUp }
 }
+

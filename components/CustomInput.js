@@ -7,7 +7,8 @@ const CustomInput = ({
   name,
   rules = {},
   placeholder,
-  secureTextEntry
+  secureTextEntry,
+  keyboardType
 }) => {
   return (
     <Controller
@@ -21,6 +22,7 @@ const CustomInput = ({
         <>
           <View style={[{ borderColor: error ? 'red' : '#e8e8e8' }]}>
             <TextInput
+              keyboardType={keyboardType}
               value={value}
               onChangeText={onChange}
               onBlur={onBlur}

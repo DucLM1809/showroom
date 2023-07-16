@@ -9,6 +9,8 @@ import { SCREEN } from '../constants/screen'
 import TokenService from '../api/tokenService'
 import { Text } from 'react-native'
 import { setIsSignedIn } from '../slices/navSlice'
+import HomeNavigator from '../components/HomeNavigator'
+import Post from '../components/Post'
 
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch()
@@ -36,9 +38,11 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView className='h-full bg-white'>
-      <TouchableOpacity onPress={handleLogoutPressed}>
+      {/* <TouchableOpacity onPress={handleLogoutPressed}>
         <Text>LOGOUT</Text>
       </TouchableOpacity>
+      <Post /> */}
+      <HomeNavigator />
     </SafeAreaView>
   )
 }

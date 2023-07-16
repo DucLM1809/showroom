@@ -11,6 +11,8 @@ import ForgotPasswordScreen from './ForgotPasswordScreen'
 import ResetPasswordScreen from './ResetPasswordScreen'
 import { useSelector } from 'react-redux'
 import { selectIsSignedIn } from '../slices/navSlice'
+import PostActionScreen from './PostActionScreen'
+import CreatePostScreen from './CreatePostScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -22,9 +24,13 @@ const MainScreen = () => {
       {isSignedIn ? (
         <>
           <Stack.Screen name={SCREEN.HOME} component={HomeScreen} />
+          <Stack.Screen
+            name={SCREEN.CREATE_POST}
+            component={CreatePostScreen}
+          />
         </>
       ) : (
-        <>
+        <Stack.Group>
           <Stack.Screen name={SCREEN.STARTER} component={StarterScreen} />
           <Stack.Screen name={SCREEN.SIGNIN} component={SignInScreen} />
           <Stack.Screen name={SCREEN.SIGNUP} component={SignUpScreen} />
@@ -37,7 +43,7 @@ const MainScreen = () => {
             name={SCREEN.RESET_PASSWORD}
             component={ResetPasswordScreen}
           />
-        </>
+        </Stack.Group>
       )}
     </Stack.Navigator>
   )

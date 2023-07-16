@@ -122,6 +122,11 @@ const ProfileScreen = ({ navigation }) => {
           <Text className='font-medium'>Full Name:</Text>
           <Text>{response?.fullName}</Text>
         </View>
+
+        <View className='flex-row gap-4 mb-2'>
+          <Text className='font-medium'>Phone Number:</Text>
+          <Text>{response?.phoneNumber}</Text>
+        </View>
       </View>
 
       <TouchableOpacity

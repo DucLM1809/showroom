@@ -6,5 +6,6 @@ export const SCREEN = Object.freeze({
   FORGOT_PASSWORD: 'ForgotPasswordScreen',
   ACTIVATE: 'ActivateScreen',
   RESET_PASSWORD: 'ResetPasswordScreen',
-  CREATE_POST: 'CreatePostScreen'
+  CREATE_POST: 'CreatePostScreen',
+  EDIT_POST: 'EditPostScreen'
 })

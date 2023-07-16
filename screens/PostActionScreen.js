@@ -1,16 +1,54 @@
-import {
-  Animated,
-  View,
-  Text,
-  Pressable,
-  StyleSheet,
-  useWindowDimensions,
-  TouchableOpacity
-} from 'react-native'
+import { View, Text, Alert, TouchableOpacity } from 'react-native'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { SCREEN } from '../constants/screen'
+import { useRequestDeletionPost } from '../hooks/usePost'
+import { useEffect } from 'react'
+import { showToast } from '../utils/toast'
+import Toast from 'react-native-root-toast'
 
-const PostActionScreen = ({ setModalVisible }) => {
-  const { height } = useWindowDimensions()
+const PostActionScreen = ({
+  setModalVisible,
+  navigation,
+  id,
+  handleGetPosts
+}) => {
+  const { response, error, handleRequestDeletionPost } =
+    useRequestDeletionPost()
+
+  const handleEditPress = () => {
+    navigation.navigate(SCREEN.EDIT_POST, { id })
+  }
+
+  const handleRequestDeletion = () => {
+    Alert.alert('Confirm', 'Do you want to request admin for deletion?', [
+      {
+        text: 'Cancel',
+        style: 'cancel'
+      },
+      {
+        text: 'Ok',
+        onPress: async () => {
+          await handleRequestDeletionPost(id)
+        },
+        style: 'cancel'
+      }
+    ])
+  }
+
+  useEffect(() => {
+    if (response && !error) {
+      showToast('Request Deletion Successfully!')
+      handleGetPosts()
+      setModalVisible(false)
+    }
+
+    error &&
+      showToast(
+        error?.response?.data?.detail || 'Request Deletion Failed!',
+        Toast.positions.TOP
+      )
+  }, [error])
+
   return (
     <View
       style={{
@@ -27,12 +65,18 @@ const PostActionScreen = ({ setModalVisible }) => {
         >
           <MaterialIcons name='close' size={30} color={'#b8bbbf'} />
         </TouchableOpacity>
-        <TouchableOpacity className='flex-row items-center gap-4 mb-4'>
+        <TouchableOpacity
+          className='flex-row items-center gap-4 mb-4'
+          onPress={handleEditPress}
+        >
           <MaterialIcons name='edit' size={25} color={'#b8bbbf'} />
           <Text className='text-xl'>Edit</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity className='flex-row items-center gap-4'>
+        <TouchableOpacity
+          className='flex-row items-center gap-4'
+          onPress={handleRequestDeletion}
+        >
           <MaterialIcons name='delete-outline' size={25} color={'#b8bbbf'} />
           <Text className='text-xl'>Request Deletion</Text>
         </TouchableOpacity>

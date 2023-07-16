@@ -7,7 +7,12 @@ import CustomInput from '../components/CustomInput'
 import { Controller, useForm } from 'react-hook-form'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { RichEditor, RichToolbar, actions } from 'react-native-pell-rich-editor'
-import { useCategories, useCreatePost } from '../hooks/usePost'
+import {
+  useCategories,
+  useCreatePost,
+  usePost,
+  useUpdatePost
+} from '../hooks/usePost'
 import ImagePicker from 'react-native-image-crop-picker'
 import axios from 'axios'
 import AxiosPost from '../api/axiosPost'
@@ -16,28 +21,41 @@ import { showToast } from '../utils/toast'
 import { MultiSelect } from 'react-native-element-dropdown'
 import { StyleSheet } from 'react-native'
 import Spinner from 'react-native-loading-spinner-overlay'
+import { ORDER_OPTION } from '../constants/post'
 
-const CreatePostScreen = ({ navigation }) => {
+const EditPostScreen = ({ navigation, route }) => {
+  const { id } = route.params
   const [imageUrls, setImageUrls] = useState([])
 
   const richText = useRef()
 
   // QUERY
   const { loading, response: categories } = useCategories()
+  const { loading: loadingPost, response: post } = usePost(id)
 
   // MUTATION
   const {
-    loading: loadingCreatePost,
-    error: errorCreatePost,
+    loading: loadingUpdatePost,
+    error: errorUpdatePost,
     response,
-    handleCreatePost
-  } = useCreatePost()
+    handleUpdatePost
+  } = useUpdatePost()
 
   const {
     control,
     formState: { errors },
-    handleSubmit
+    handleSubmit,
+    setValue
   } = useForm()
+
+  useEffect(() => {
+    if (post) {
+      setValue('title', post?.title)
+      setValue('description', post?.description)
+      setValue('price', post?.price?.toString())
+      setImageUrls(post?.imageUrls)
+    }
+  }, [post])
 
   const openImagePicker = () => {
     ImagePicker?.openPicker({
@@ -84,8 +102,8 @@ const CreatePostScreen = ({ navigation }) => {
     setImageUrls((prev) => [...prev].filter((item) => item !== image))
   }
 
-  const onCreatePost = (data) => {
-    handleCreatePost({
+  const onUpdatePost = (data) => {
+    handleUpdatePost(id, {
       ...data,
       price: Number(data.price),
       imageUrls
@@ -93,22 +111,22 @@ const CreatePostScreen = ({ navigation }) => {
   }
 
   useEffect(() => {
-    if (response && !errorCreatePost) {
+    if (response && !errorUpdatePost) {
       showToast('Create Post Successfully!')
       navigation.goBack()
     }
 
-    errorCreatePost &&
+    errorUpdatePost &&
       showToast(
-        errorCreatePost?.response?.data?.detail || 'Create Post Failed!'
+        errorUpdatePost?.response?.data?.detail || 'Update Post Failed!'
       )
-  }, [response, errorCreatePost])
+  }, [response, errorUpdatePost])
 
   return (
     <>
-      {loading || loadingCreatePost ? (
+      {loading || loadingPost || loadingUpdatePost ? (
         <Spinner
-          visible={loading || loadingCreatePost}
+          visible={loading || loadingPost || loadingUpdatePost}
           textContent={'Loading...'}
         />
       ) : (
@@ -116,7 +134,7 @@ const CreatePostScreen = ({ navigation }) => {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View className='bg-white pt-4'>
               <View className='flex-row justify-center items-center'>
-                <Text className='text-lg font-semibold'>Create Post</Text>
+                <Text className='text-lg font-semibold'>Edit Post</Text>
               </View>
               <View className='relative'>
                 <View className='flex-row items-center gap-2 m-auto -translate-x-4 mb-4'>
@@ -316,7 +334,7 @@ const CreatePostScreen = ({ navigation }) => {
 
               <TouchableOpacity
                 className='bg-primary-500 py-4 rounded-2xl'
-                onPress={handleSubmit(onCreatePost)}
+                onPress={handleSubmit(onUpdatePost)}
               >
                 <Text className='text-center font-semibold'>Create</Text>
               </TouchableOpacity>
@@ -328,7 +346,7 @@ const CreatePostScreen = ({ navigation }) => {
   )
 }
 
-export default CreatePostScreen
+export default EditPostScreen
 
 const styles = StyleSheet.create({
   container: { padding: 16 },

@@ -13,7 +13,7 @@ import GestureRecognizer from 'react-native-swipe-gestures'
 import RenderHtml from 'react-native-render-html'
 import { useWindowDimensions } from 'react-native'
 
-const Post = ({ navigation, item }) => {
+const Post = ({ navigation, item, handleGetPosts }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const { width } = useWindowDimensions()
   return (
@@ -47,7 +47,12 @@ const Post = ({ navigation, item }) => {
         onSwipeDown={() => setModalVisible(false)}
       >
         <Modal animationType='slide' visible={modalVisible} transparent={true}>
-          <PostActionScreen setModalVisible={setModalVisible} />
+          <PostActionScreen
+            setModalVisible={setModalVisible}
+            navigation={navigation}
+            id={item?.id}
+            handleGetPosts={handleGetPosts}
+          />
         </Modal>
       </GestureRecognizer>
     </View>

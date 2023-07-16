@@ -35,7 +35,10 @@ const Post = ({ navigation, item, handleGetPosts, id }) => {
             <Text>{moment(item?.updatedAt).fromNow()}</Text>
           </View>
         </View>
-        <TouchableOpacity onPress={() => setModalVisible(true)}>
+        <TouchableOpacity
+          onPress={() => setModalVisible(true)}
+          style={{ zIndex: 2 }}
+        >
           <Entypo name='dots-three-horizontal' size={20} color={'#b8bbbf'} />
         </TouchableOpacity>
       </View>

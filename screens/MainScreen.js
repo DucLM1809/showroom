@@ -14,6 +14,7 @@ import { selectIsSignedIn } from '../slices/navSlice'
 import CreatePostScreen from './CreatePostScreen'
 import EditPostScreen from './EditPostScreen'
 import EditProfileScreen from './EditProfileScreen'
+import DetailScreen from './DetailScreen'
 
 const Stack = createNativeStackNavigator()
 
@@ -34,6 +35,11 @@ const MainScreen = () => {
             name={SCREEN.EDIT_PROFILE}
             component={EditProfileScreen}
           />
+          <Stack.Screen
+            name={SCREEN.DETAILS}
+            component={DetailScreen}
+            options={{ headerShown: false }}
+          />
         </>
       ) : (
         <Stack.Group>
@@ -51,6 +57,20 @@ const MainScreen = () => {
           />
         </Stack.Group>
       )}
+      {/* <Stack.Group>
+        <Stack.Screen name={SCREEN.STARTER} component={StarterScreen} />
+        <Stack.Screen name={SCREEN.SIGNIN} component={SignInScreen} />
+        <Stack.Screen name={SCREEN.SIGNUP} component={SignUpScreen} />
+        <Stack.Screen name={SCREEN.ACTIVATE} component={ActivateScreen} />
+        <Stack.Screen
+          name={SCREEN.FORGOT_PASSWORD}
+          component={ForgotPasswordScreen}
+        />
+        <Stack.Screen
+          name={SCREEN.RESET_PASSWORD}
+          component={ResetPasswordScreen}
+        />
+      </Stack.Group> */}
     </Stack.Navigator>
   )
 }

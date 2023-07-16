@@ -2,16 +2,33 @@ import { KeyboardAvoidingView, Platform } from 'react-native'
 import { Provider } from 'react-redux'
 import { store } from './store'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import { NavigationContainer } from '@react-navigation/native'
+import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import MainScreen from './screens/MainScreen'
+import { useMemo } from 'react'
 
 const Stack = createNativeStackNavigator()
 
+
 export default function App() {
+
+  const theme = useMemo(
+    ()=>({
+      ...DefaultTheme,
+      colors:{
+        ...DefaultTheme.colors,
+        background:'#f5f5f5',
+        text: '#191919',
+        border: '#d9d9d9',
+        primary: '#191919'
+      }
+    }),
+    []
+  );
   return (
     <Provider store={store}>
-      <SafeAreaProvider>
+      
+      <SafeAreaProvider theme={theme}>
         <NavigationContainer>
           {/* <KeyboardAvoidingView
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -22,6 +39,7 @@ export default function App() {
           {/* </KeyboardAvoidingView> */}
         </NavigationContainer>
       </SafeAreaProvider>
+      
     </Provider>
   )
 }

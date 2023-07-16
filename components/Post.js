@@ -17,7 +17,11 @@ const Post = ({ navigation, item, handleGetPosts, id }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const { width } = useWindowDimensions()
   return (
-    <View key={id} className='bg-white my-2 mb-0 py-3'>
+    <TouchableOpacity
+      onPress={() => navigation.navigate(SCREEN.DETAILS, { id })}
+      key={id}
+      className='bg-white my-2 mb-0 py-3'
+    >
       <View className='flex-row justify-between px-4'>
         <View className='flex-row gap-2 items-center'>
           <Image
@@ -55,7 +59,7 @@ const Post = ({ navigation, item, handleGetPosts, id }) => {
           />
         </Modal>
       </GestureRecognizer>
-    </View>
+    </TouchableOpacity>
   )
 }
 

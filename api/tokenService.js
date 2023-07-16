@@ -1,6 +1,4 @@
-const {
-  default: AsyncStorage
-} = require('@react-native-async-storage/async-storage')
+import AsyncStorage from '@react-native-async-storage/async-storage'
 const { LOCAL_STORAGE_ITEMS } = require('../constants/common')
 
 const getAccessToken = async () => {

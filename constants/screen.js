@@ -10,5 +10,10 @@ export const SCREEN = Object.freeze({
   EDIT_POST: 'EditPostScreen',
   VIEW_POST: 'ViewPostScreen',
   PROFILE: 'ProfileScreen',
-  EDIT_PROFILE: 'EditProfileScreen'
+  EDIT_PROFILE: 'EditProfileScreen',
+  USER_VIEW_POSTS: 'UserViewPostsScreen',
+  WISHLIST: 'WishListScreen',
+  BOOKING: 'BookingScreen',
+  PURCHASE: 'PurchaseScreen',
+  DETAILS: 'DetailsScreen'
 })

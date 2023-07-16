@@ -85,7 +85,6 @@ const EditProfileScreen = ({ navigation }) => {
   const onUpdatePost = (data) => {
     handleUpdateProfile({
       ...data,
-      ...(data?.phoneNumber && { phoneNumber: Number(data?.phoneNumber) }),
       avatarUrl
     })
   }

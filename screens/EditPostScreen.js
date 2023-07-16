@@ -53,6 +53,10 @@ const EditPostScreen = ({ navigation, route }) => {
       setValue('title', post?.title)
       setValue('description', post?.description)
       setValue('price', post?.price?.toString())
+      setValue(
+        'categoryIds',
+        post?.categories?.map((item) => item?.id)
+      )
       setImageUrls(post?.imageUrls)
     }
   }, [post])
@@ -112,7 +116,7 @@ const EditPostScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     if (response && !errorUpdatePost) {
-      showToast('Create Post Successfully!')
+      showToast('Update Post Successfully!')
       navigation.goBack()
     }
 
@@ -336,7 +340,7 @@ const EditPostScreen = ({ navigation, route }) => {
                 className='bg-primary-500 py-4 rounded-2xl'
                 onPress={handleSubmit(onUpdatePost)}
               >
-                <Text className='text-center font-semibold'>Create</Text>
+                <Text className='text-center font-semibold'>Update</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>

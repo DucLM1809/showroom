@@ -12,6 +12,18 @@ import Spinner from 'react-native-loading-spinner-overlay'
 import { ORDER_OPTION } from '../constants/post'
 
 const ViewPostsScreen = ({ navigation }) => {
+  const isCloseToBottom = ({
+    layoutMeasurement,
+    contentOffset,
+    contentSize
+  }) => {
+    const paddingToBottom = 20
+    return (
+      layoutMeasurement.height + contentOffset.y >=
+      contentSize.height - paddingToBottom
+    )
+  }
+
   const [search, setSearch] = useState()
   const [limit, setLimit] = useState(20)
 
@@ -29,6 +41,7 @@ const ViewPostsScreen = ({ navigation }) => {
   }, [])
 
   const handleLoadMore = () => {
+    console.log('LOAD MORE')
     !loading && setLimit((prev) => prev + 10)
   }
 
@@ -40,7 +53,13 @@ const ViewPostsScreen = ({ navigation }) => {
   }, [search_keyword, limit])
 
   return (
-    <ScrollView onMomentumScrollEnd={handleLoadMore}>
+    <ScrollView
+      onScroll={({ nativeEvent }) => {
+        if (isCloseToBottom(nativeEvent)) {
+          handleLoadMore()
+        }
+      }}
+    >
       <View className='bg-white pt-4'>
         <View className='flex-row justify-center items-center'>
           <Text className='text-lg font-semibold'>Posts</Text>

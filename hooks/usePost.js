@@ -4,16 +4,18 @@ import AxiosPost from '../api/axiosPost'
 import AxiosPut from '../api/axiosPut'
 import { ORDER_OPTION } from '../constants/post'
 
-export const usePosts = (params) => {
+export const usePosts = () => {
   const [loading, setLoading] = useState()
   const [error, setError] = useState()
   const [response, setResponse] = useState()
 
-  const handleGetPosts = async () => {
+  const handleGetPosts = async (params) => {
     setLoading(true)
     try {
       const res = await AxiosGet('posts/me', {
         ...params,
+        limit: params?.limit > 100 ? 100 : params.limit,
+        offset: 0,
         order_by: ORDER_OPTION.NEWEST
       })
 

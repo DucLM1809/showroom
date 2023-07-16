@@ -85,6 +85,7 @@ const EditProfileScreen = ({ navigation }) => {
   const onUpdatePost = (data) => {
     handleUpdateProfile({
       ...data,
+      ...(data?.phoneNumber && { phoneNumber: Number(data?.phoneNumber) }),
       avatarUrl
     })
   }
@@ -207,6 +208,17 @@ const EditProfileScreen = ({ navigation }) => {
                 placeholder='Full Name'
                 control={control}
                 name='fullName'
+              />
+            </View>
+
+            <View className='mb-4'>
+              <Text className='font-semibold mb-2'>Phone Number</Text>
+
+              <CustomInput
+                placeholder='0969218002'
+                control={control}
+                name='phoneNumber'
+                keyboardType={'numeric'}
               />
             </View>
 

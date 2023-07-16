@@ -8,7 +8,7 @@ import {
 } from "../tailwinds/tailwindComponent";
 import React from "react";
 import Icons from "@expo/vector-icons/MaterialIcons";
-import { Platform } from "react-native";
+
 
 
 

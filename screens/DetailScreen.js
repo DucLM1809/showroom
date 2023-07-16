@@ -39,7 +39,7 @@ const DetailScreen = ({ route, navigation }) => {
       </TouchableOpacity>
       <View>
         <FlatList
-          data={product.URL}
+          data={product.imageUrls}
           horizontal
           renderItem={renderProduct}
           showsHorizontalScrollIndicator={false}
@@ -57,22 +57,24 @@ const DetailScreen = ({ route, navigation }) => {
         <TouchableOpacity className=" absolute top-3 right-3 border-2 rounded-full p-2 z-20" >
           <Icons name="favorite-outline" size={25} />
         </TouchableOpacity>
-        <Text className="text-4xl font-semibold ml-2 mt-2">{product.name}</Text>
+        <Text className="text-3xl font-semibold ml-2 mt-2 w-[80%]">{product.title}</Text>
 
         <Text className="text-base font-normal ml-2 mt-4">
           {product.description}
         </Text>
         <View className="flex-row px-3 mt-4">
-          <View className="bg-[#525050] py-1  px-3 rounded-3xl mr-3  ">
+          {product.categories.map((cate, i)=>{
+            return(
+
+          <View key={i} className="bg-[#525050] py-1  px-3 rounded-3xl mr-3  ">
             <Text className="text-white font-semibold text-lg   ">
-              {product.category}
+              {cate.name}
             </Text>
           </View>
-          <View className="bg-[#525050] py-1  px-3 rounded-3xl   ">
-            <Text className="text-white font-semibold text-lg  ">
-              {product.category}
-            </Text>
-          </View>
+            )
+
+          })}
+          
         </View>
       </View>
       <View className="absolute bottom-0 flex-row justify-between w-[100vw] px-2 items-center">

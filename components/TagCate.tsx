@@ -10,14 +10,18 @@ export interface Props {
 
 const TagCate = ({ item, selected, setSelected }: Props) => {
   return (
-    <TouchableOpacity className="mx-1" onPress={()=>setSelected(item.id)}>
+    <TouchableOpacity className="mx-1" onPress={()=>{
+      selected===item.id ?
+      setSelected(0):
+      setSelected(item.id)
+    }}>
         {selected===item.id?
-      <View className="w-[60px] h-[30px] bg-[#161616] flex justify-center items-center rounded-2xl">
+      <View className="w-[90px] h-[30px] bg-[#161616] flex justify-center items-center rounded-2xl">
         <Text className="text-white">{item.name}</Text>
       </View>
       :
-      <View className="w-[60px] h-[30px] bg-[#ffffff] flex justify-center items-center rounded-2xl border border-[#d9d9d9]">
-      <Text className="text-[#d9d9d9]">{item.name}</Text>
+      <View className="w-[90px] h-[30px] bg-[#ffffff] flex justify-center items-center rounded-2xl border border-[#b3b3b3]">
+      <Text className="text-[#b3b3b3]">{item.name}</Text>
     </View>
       }
     </TouchableOpacity>

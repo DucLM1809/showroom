@@ -33,6 +33,32 @@ export const useGetPost = ()=>{
       return { response, error, handleGetPosts }
 }
 
+export const useGetPostById = ()=>{
+  const [error, setError] = useState()
+  const [response, setResponse] = useState()
+  const [loading, setLoading] = useState(false)
+
+ 
+    const handleGetPostById = async (id) => {
+      setLoading(true)
+      try {
+        const res = await AxiosGet(`posts/${id}`)
+  
+        if (res) {
+          setResponse(res?.data)
+          setError(null)
+          setLoading(false)
+        }
+      } catch (error) {
+        setLoading(false)
+        setResponse(null)
+        setError(error)
+      }
+    }
+
+    return { response, error, handleGetPostById }
+}
+
 export const useGetCategories = ()=>{
     const [error, setError] = useState()
     const [response, setResponse] = useState()

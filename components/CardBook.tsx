@@ -24,7 +24,7 @@ const CardBook = ({ product, i, navigation }: Props) => {
   return (
     <TouchableOpacity
       className={`flex-row h-[175px] w-[93%] mx-auto mb-4 relative   `}
-      onPress={() => navigation.navigate("Details", { product: product })}
+      onPress={() => navigation.navigate("Details", { id: product.id })}
     >
       <Image
         className="h-full w-[50%] object-cover rounded-l-2xl"

@@ -22,5 +22,6 @@ export const SCREEN = Object.freeze({
   BOOKING_MANAGE: 'BookingManageScreen',
   TRANSACTION_MANAGE: 'TransactionManageScreen',
   POSTS_MANAGE: 'PostsManageScreen',
-  USERS_MANAGE: 'UsersManageScreen'
+  USERS_MANAGE: 'UsersManageScreen',
+  DRAWER_FILTER: 'DrawerFilterScreen'
 })

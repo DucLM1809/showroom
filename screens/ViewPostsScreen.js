@@ -1,4 +1,11 @@
-import { View, Text, TextInput, Image, TouchableOpacity } from 'react-native'
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  TouchableOpacity,
+  Modal
+} from 'react-native'
 import React, { Suspense, useEffect } from 'react'
 import Post from '../components/Post'
 import { ScrollView } from 'react-native'
@@ -9,6 +16,9 @@ import { usePosts } from '../hooks/usePost'
 import { useDebounce } from '../hooks/useDebounce'
 import { SCREEN } from '../constants/screen'
 import Spinner from 'react-native-loading-spinner-overlay'
+import GestureRecognizer from 'react-native-swipe-gestures'
+import DrawerFilterScreen from './DrawerFilterScreen'
+import { ORDER_OPTION } from '../constants/post'
 
 const ViewPostsScreen = ({ navigation }) => {
   const isCloseToBottom = ({
@@ -23,8 +33,12 @@ const ViewPostsScreen = ({ navigation }) => {
     )
   }
 
+  const [modalVisible, setModalVisible] = useState(false)
   const [search, setSearch] = useState()
   const [limit, setLimit] = useState(20)
+  const [categories, setCategories] = useState([])
+  const [order_by, setOrderBy] = useState(ORDER_OPTION.NEWEST)
+  const [status, setStatus] = useState()
 
   const search_keyword = useDebounce(search, 300)
 
@@ -44,11 +58,20 @@ const ViewPostsScreen = ({ navigation }) => {
   }
 
   useEffect(() => {
-    handleGetPosts({
-      limit,
-      ...(search_keyword && { search_keyword })
-    })
-  }, [search_keyword, limit])
+    handleGetPosts(
+      {
+        ...(search_keyword && { search_keyword }),
+        ...(order_by && { order_by }),
+        ...(status && { status })
+      },
+      categories.length > 0 &&
+        categories
+          ?.map((category) => {
+            return `categories=${category}`
+          })
+          .join('&')
+    )
+  }, [search_keyword, limit, categories, order_by, status])
 
   return (
     <ScrollView
@@ -90,7 +113,7 @@ const ViewPostsScreen = ({ navigation }) => {
         </View>
       </View>
 
-      <View className='my-4 flex-row items-center'>
+      <View className='my-4 flex-row items-center mx-2'>
         <Ionicons name='search-outline' size={25} />
         <TextInput
           className='flex-1 bg-white mx-2 rounded-md py-2 px-4 border border-gray-300 focus:border focus:border-blue-400'
@@ -98,6 +121,20 @@ const ViewPostsScreen = ({ navigation }) => {
           placeholder='Search keywords...'
         />
       </View>
+
+      <TouchableOpacity
+        className='my-4 flex-row items-center rounded-md w-24 ml-2'
+        style={{
+          flexShrink: 10,
+          color: '#777777',
+          padding: 12,
+          backgroundColor: 'white'
+        }}
+        onPress={() => setModalVisible(true)}
+      >
+        <Ionicons name='filter-outline' size={20} />
+        <Text>Filter</Text>
+      </TouchableOpacity>
 
       <Spinner visible={loading || !response} textContent={'Loading...'} />
       {response?.map((item) => (
@@ -110,6 +147,24 @@ const ViewPostsScreen = ({ navigation }) => {
           />
         </>
       ))}
+
+      <GestureRecognizer
+        style={{ flex: 1 }}
+        onSwipeDown={() => setModalVisible(false)}
+      >
+        <Modal animationType='slide' visible={modalVisible} transparent={true}>
+          <DrawerFilterScreen
+            setModalVisible={setModalVisible}
+            navigation={navigation}
+            setCategories={setCategories}
+            categories={categories}
+            orderBy={order_by}
+            setOrderBy={setOrderBy}
+            status={status}
+            setStatus={setStatus}
+          />
+        </Modal>
+      </GestureRecognizer>
     </ScrollView>
   )
 }

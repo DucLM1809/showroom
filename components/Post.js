@@ -58,6 +58,7 @@ const Post = ({ navigation, item, handleGetPosts, id }) => {
             setModalVisible={setModalVisible}
             navigation={navigation}
             id={item?.id}
+            status={item?.status}
             handleGetPosts={handleGetPosts}
           />
         </Modal>

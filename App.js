@@ -9,25 +9,22 @@ import { useMemo } from 'react'
 
 const Stack = createNativeStackNavigator()
 
-
 export default function App() {
-
   const theme = useMemo(
-    ()=>({
+    () => ({
       ...DefaultTheme,
-      colors:{
+      colors: {
         ...DefaultTheme.colors,
-        background:'#f5f5f5',
+        background: '#f5f5f5',
         text: '#191919',
         border: '#d9d9d9',
         primary: '#191919'
       }
     }),
     []
-  );
+  )
   return (
     <Provider store={store}>
-      
       <SafeAreaProvider theme={theme}>
         <NavigationContainer>
           {/* <KeyboardAvoidingView
@@ -39,7 +36,6 @@ export default function App() {
           {/* </KeyboardAvoidingView> */}
         </NavigationContainer>
       </SafeAreaProvider>
-      
     </Provider>
   )
 }

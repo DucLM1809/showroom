@@ -79,12 +79,16 @@ const BookingsManage = ({ navigation }) => {
           <StyledImage
             className="h-16 w-16 rounded-xl"
             source={{
-              uri: "https://scontent.fsgn5-8.fna.fbcdn.net/v/t39.30808-6/322115926_1204139193874845_7113739806147074311_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=uRnx00sZSTMAX9xTcLN&_nc_ht=scontent.fsgn5-8.fna&oh=00_AfBlakqtuxU2K28ELNQ5hPKH1QDNQl_ek9l67p1oyA3t5g&oe=64B21AEA",
+              uri: booking.user.avatarUrl
+                ? booking.user.avatarUrl
+                : "https://img.freepik.com/free-icon/user_318-159711.jpg?w=2000",
             }}
             resizeMode="cover"
           />
           <StyledView className="mx-5 justify-center basis-3/5">
-            <StyledText className=" text-xl">{booking.id}</StyledText>
+            <StyledText className=" text-xl">
+              {booking.user.fullName ? booking.user.fullName : "Anonymous"}
+            </StyledText>
             <StyledText className="text-slate-500">User</StyledText>
           </StyledView>
           <StyledView className="justify-center ">

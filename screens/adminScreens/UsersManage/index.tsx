@@ -1,4 +1,13 @@
-import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  TouchableOpacity,
+  Modal,
+  StyleSheet,
+  Pressable,
+} from "react-native";
 import React, { useEffect, useState } from "react";
 
 import {
@@ -25,6 +34,9 @@ interface User {
 const UsersManage = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [activeButton, setActiveButton] = useState<string>("Activated");
+  const [isVisibleModal, setIsVisibleModal] = useState(false);
+  const [userSelected, setUserSelected] = useState(null);
+  const [userStatus, setUserStatus] = useState();
 
   const { response, error } = useGetUsers();
   useEffect(() => {
@@ -33,13 +45,67 @@ const UsersManage = () => {
       setUsers(filterRes);
     }
   }, [response]);
+  const toggleModal = (id, status) => {
+    setIsVisibleModal(!isVisibleModal);
+    setUserSelected(id);
+    setUserStatus(status);
+  };
 
   const handleUpdateStatus = async (id, status) => {
+    if (status === true) {
+      toggleModal(id, status);
+    } else {
+      handleChangeStatus(id, status);
+    }
+  };
+
+  const handleChangeStatus = async (id, status) => {
     await updateUserStatus(id, !status);
     const updatedUsers = users.map((user) =>
       user.id === id ? { ...user, isActive: !status } : user
     );
     setUsers(updatedUsers);
+  };
+
+  const ModalConfirm = ({ id, status }) => {
+    return (
+      <Modal animationType="fade" transparent={true} visible={isVisibleModal}>
+        <View style={styles.modal}>
+          <StyledText>Do you want to disable this user?</StyledText>
+          <StyledView style={styles.contentModal}>
+            <Pressable
+              style={styles.buttonModal}
+              onPress={() => {
+                setIsVisibleModal(false);
+                handleChangeStatus(id, status);
+              }}
+            >
+              <StyledText
+                style={{
+                  fontWeight: "600",
+                }}
+              >
+                Yes
+              </StyledText>
+            </Pressable>
+            <Pressable
+              style={styles.buttonModal}
+              onPress={() => {
+                setIsVisibleModal(false);
+              }}
+            >
+              <StyledText
+                style={{
+                  fontWeight: "600",
+                }}
+              >
+                No
+              </StyledText>
+            </Pressable>
+          </StyledView>
+        </View>
+      </Modal>
+    );
   };
 
   const CardUser = ({ user }: { user: User }) => {
@@ -95,6 +161,9 @@ const UsersManage = () => {
             </StyledView>
           </StyledTouchableOpacity>
         </StyledView>
+        {isVisibleModal && (
+          <ModalConfirm id={userSelected} status={userStatus} />
+        )}
       </StyledView>
     );
   };
@@ -128,7 +197,7 @@ const UsersManage = () => {
                 activeButton === "unActivated" ? "text-white" : "text-blue-500"
               } text-xl font-normal`}
             >
-              unActive
+              inActive
             </StyledText>
           </StyledView>
         </TouchableOpacity>
@@ -156,5 +225,37 @@ const UsersManage = () => {
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  modal: {
+    margin: 20,
+    marginTop: "80%",
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  buttonModal: {
+    width: 70,
+    borderRadius: 20,
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "#2196F3",
+  },
+  contentModal: {
+    flexDirection: "row",
+    gap: 15,
+    marginTop: 16,
+  },
+});
 
 export default UsersManage;

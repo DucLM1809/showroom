@@ -5,6 +5,10 @@ import {
   ImageBackground,
   TouchableOpacity,
   Modal,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  SafeAreaView,
 } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -14,9 +18,7 @@ import {
   StyledImageBackground,
   StyledModal,
 } from "../components/styled";
-import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
-import axios from "axios";
 import { updatePostStatus, useGetPosts } from "../../../hooks/useAdmin";
 import { STATUS } from "./constants";
 import RBSheet from "react-native-raw-bottom-sheet";
@@ -41,7 +43,8 @@ const PostsManage = () => {
     status:
       | "SOLD"
       | "AVAILABLE"
-      | "REJECTED"
+      | "DELETE_REJECTED"
+      | "REVIEW_REJECTED"
       | "RESERVED"
       | "UNDER REVIEW"
       | "AWAITING DELETION";
@@ -51,7 +54,7 @@ const PostsManage = () => {
   }
   const [posts, setPosts] = useState<Post[]>([]);
 
-  const { res, error } = useGetPosts();
+  const { res, error, fetchPosts } = useGetPosts();
   useEffect(() => {
     if (res) {
       setPosts(res);
@@ -68,15 +71,30 @@ const PostsManage = () => {
     bottomSheetRef.current.open();
   };
 
-  const handleUpdateStatus = async (status) => {
-    const id = currentPostId.current;
-    const adminNote = status === "REJECTED" ? "Note" : "";
+  const [isViewNote, setIsViewNote] = useState(false);
+  const [adminNote, setAdminNote] = useState("");
+  const [postStatus, setPostStatus] = useState("");
+
+  const handleChangeStatus = async (id, status, adminNote) => {
     await updatePostStatus(id, { status, adminNote });
+    fetchPosts();
+    setAdminNote("");
 
     const updatedPosts = posts.map((post) =>
       post.id === id ? { ...post, status } : post
     );
     setPosts(updatedPosts);
+    setIsViewNote(false);
+  };
+
+  const handleUpdateStatus = async (status) => {
+    const id = currentPostId.current;
+    if (status === "REVIEW_REJECTED" || status === "DELETE_REJECTED") {
+      setPostStatus(status);
+      setIsViewNote(true);
+    } else {
+      handleChangeStatus(id, status, adminNote);
+    }
   };
 
   const CardPost = ({ post }: { post: Post }) => {
@@ -105,7 +123,7 @@ const PostsManage = () => {
                 {post.categories.map((category) => {
                   return (
                     <StyledView className=" py-2 px-4 mx-2 bg-slate-100 rounded-xl opacity-80">
-                      <StyledText>{category}</StyledText>
+                      <StyledText>{category.name}</StyledText>
                     </StyledView>
                   );
                 })}
@@ -130,6 +148,7 @@ const PostsManage = () => {
             </StyledView>
           </StyledView>
         </TouchableOpacity>
+
         <RBSheet
           ref={bottomSheetRef}
           height={200}
@@ -165,17 +184,98 @@ const PostsManage = () => {
             })}
           </ScrollView>
         </RBSheet>
+        <StyledView style={styles.centeredView}>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={isViewNote}
+            onRequestClose={() => {
+              setIsViewNote(!isViewNote);
+            }}
+          >
+            <StyledView className="flex-1 justify-center items-center mt-10">
+              <View style={styles.modalView}>
+                <Text style={styles.modalText}>Admin Note</Text>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={(text) => setAdminNote(text)}
+                  value={adminNote}
+                  placeholder="Enter admin note"
+                />
+                <Pressable
+                  style={[styles.button, styles.buttonClose]}
+                  onPress={() => {
+                    setIsViewNote(false);
+                    handleChangeStatus(post.id, postStatus, adminNote);
+                  }}
+                >
+                  <Text style={styles.textStyle}>Submit</Text>
+                </Pressable>
+              </View>
+            </StyledView>
+          </Modal>
+        </StyledView>
       </StyledView>
     );
   };
 
   return (
     <ScrollView>
-      {posts.map((post) => {
-        return <CardPost post={post} />;
+      {posts?.map((post, index) => {
+        return <CardPost key={post?.id || index} post={post} />;
       })}
     </ScrollView>
   );
 };
+const styles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: "#F194FF",
+  },
+  buttonClose: {
+    backgroundColor: "#2196F3",
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  input: {
+    height: 40,
+    borderColor: "gray",
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+});
 
 export default PostsManage;

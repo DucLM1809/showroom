@@ -6,33 +6,61 @@ import {
   TouchableOpacity,
   ScrollView
 } from "../tailwinds/tailwindComponent";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Icons from "@expo/vector-icons/MaterialIcons";
+import { useGetPostById } from "../hooks/usePost";
+import { useIsFocused } from "@react-navigation/native";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 
 
 
 export interface Props {
-  product: Iproduct;
+  booking: any;
   i: number;
   navigation: any;
 }
 
 
 
-const CardBook = ({ product, i, navigation }: Props) => {
+const CardBook = ({ booking, i, navigation }: Props) => {
+  const getPostById = useGetPostById()
+  const [product, setproduct] = useState({}) as any
+  const isFocus = useIsFocused()
+
+
+
+  useEffect(()=>{
+    getPostById.handleGetPostById(booking.postId)
+  },[])
+
+  useEffect(()=>{
+    if(getPostById.error){
+      console.log(getPostById.error)
+      return
+      
+    }
+    if(getPostById.response){
+      setproduct(getPostById.response)
+      
+    }
+  },[getPostById])
+
+  
   return (
     <TouchableOpacity
       className={`flex-row h-[175px] w-[93%] mx-auto mb-4 relative   `}
-      onPress={() => navigation.navigate("Details", { id: product.id })}
-    >
+      onPress={() => navigation.navigate("Details", { id: product.postId })}
+    >{
+      product?.imageUrls&&
       <Image
         className="h-full w-[50%] object-cover rounded-l-2xl"
-        source={{ uri: product.URL[0] }}
+        source={{ uri: product?.imageUrls[0]  }}
       />
+    }
 
      <View className="h-full w-[50%] bg-slate-200 rounded-r-2xl  flex relative pl-2 ">
-        <Text className=" text-xl font-semibold">{product.name}</Text>
+        <Text className=" text-xl font-semibold">{product.title}</Text>
         <Text className="text-base">${product.price}</Text>
         <Text className=" text-lg mt-3 text-[#000000] h-[40%] overflow-hidden">2023/07/21 00:05</Text>
         <View className="absolute bottom-0 flex-row justify-end w-full mb-2 mr-2">
@@ -48,6 +76,7 @@ const CardBook = ({ product, i, navigation }: Props) => {
         </View>
      </View>
     </TouchableOpacity>
+    
   );
 };
 

@@ -21,8 +21,8 @@ import ModalBooking from "../components/ModalBooking";
 import { useGetCategories, useGetPost } from "../hooks/usePost";
 import { useGetWishList, usePutWishList } from "../hooks/useWishList";
 import { useIsFocused } from '@react-navigation/native';
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-// import { LOCAL_STORAGE_ITEMS } from "../constants/common";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LOCAL_STORAGE_ITEMS } from "../constants/common";
 
 const HomeScreen = ({ navigation }) => {
   const dispatch = useDispatch();
@@ -46,7 +46,7 @@ const HomeScreen = ({ navigation }) => {
   const getWishList = useGetWishList();
   const putWishList = usePutWishList();
 
-  // AsyncStorage.setItem(LOCAL_STORAGE_ITEMS.ACCESS_TOKEN,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHVkZW50MjE2MTk5OUBnbWFpbC5jb20iLCJ1c2VyX2lkIjoiZDE4ZGMzMzYtNzhmNy00NGM1LWE1MzctZmM3ODI5OTRmNDc1IiwiZXhwIjoxNjg5NTM4ODgyLCJyb2xlIjoiVVNFUiIsImlzX2FjdGl2ZSI6dHJ1ZSwiaXNfYWN0aXZhdGVkIjp0cnVlfQ.JAUF4FLYcs28VAzu-48iKiGCoXVahORWhnmKYpBkGrY')
+  // AsyncStorage.setItem(LOCAL_STORAGE_ITEMS.ACCESS_TOKEN,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHVkZW50MjE2MTk5OUBnbWFpbC5jb20iLCJ1c2VyX2lkIjoiZDE4ZGMzMzYtNzhmNy00NGM1LWE1MzctZmM3ODI5OTRmNDc1IiwiZXhwIjoxNjg5NTY1MDQ5LCJyb2xlIjoiVVNFUiIsImlzX2FjdGl2ZSI6dHJ1ZSwiaXNfYWN0aXZhdGVkIjp0cnVlfQ.5nEK1wVb_8x-kePQHEacnJLWdiByv-5OtsWHKAnW9r0')
 
   useEffect(() => {
     if(isFocus){

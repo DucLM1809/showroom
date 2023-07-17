@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3dec8a81-4ba2-4a6e-92d5-053a301b453e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../components/CardCate.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/CardCate.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../components/CardFavo.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../components/CardFavo.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screens/FavoriteScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/FavoriteScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../screens/HomeScreen.js" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/HomeScreen.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../yarn.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -14,7 +14,7 @@ const CardSmall = ({ product, navigation }) => {
   return (
     <TouchableOpacity
       className='flex h-full relative '
-      onPress={() => navigation.navigate(SCREEN.DETAILS, { product: product })}
+      onPress={() => navigation.navigate(SCREEN.DETAILS, { id: product.id })}
     >
       <Image
         className='h-full object-cover rounded-2xl'

@@ -7,19 +7,22 @@ import {
 } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
-// import TabsNavigator from '../navigators/TabsNavigator'
+import TabsNavigator from '../navigators/TabsNavigator'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import Icons from '@expo/vector-icons/MaterialIcons'
 import { useTheme } from '@react-navigation/native'
 import CardSmall from '../components/CardSmall'
-import { allProduct, hotProduct } from '../mockData/products'
-import { categories } from '../mockData/category'
+
 import TagCate from '../components/TagCate'
 import MasonryList from '@react-native-seoul/masonry-list'
 import CardCate from '../components/CardCate'
 import { Modal, TextInput } from '../tailwinds/tailwindComponent'
 import ModalBooking from '../components/ModalBooking'
 import { useGetCategories, useGetPost } from '../hooks/usePost'
+import { useGetWishList, usePutWishList } from '../hooks/useWishList'
+import { useIsFocused } from '@react-navigation/native'
+// import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { LOCAL_STORAGE_ITEMS } from "../constants/common";
 
 const UserViewPostsScreen = ({ navigation }) => {
   const dispatch = useDispatch()
@@ -30,6 +33,8 @@ const UserViewPostsScreen = ({ navigation }) => {
   const [postData, setpostData] = useState([])
   const [categoryData, setcategoryData] = useState([{ id: 0, name: 'All' }])
   const [postFilterData, setpostFilterData] = useState([])
+  const [wishlist, setWishlist] = useState([])
+  const isFocus = useIsFocused()
 
   const { handleGetPosts, response: responseGetPost, error } = useGetPost()
   const {
@@ -38,10 +43,34 @@ const UserViewPostsScreen = ({ navigation }) => {
     error: errorGetCate
   } = useGetCategories()
 
+  const getWishList = useGetWishList()
+  const putWishList = usePutWishList()
+
+  // AsyncStorage.setItem(LOCAL_STORAGE_ITEMS.ACCESS_TOKEN,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHVkZW50MjE2MTk5OUBnbWFpbC5jb20iLCJ1c2VyX2lkIjoiZDE4ZGMzMzYtNzhmNy00NGM1LWE1MzctZmM3ODI5OTRmNDc1IiwiZXhwIjoxNjg5NTM4ODgyLCJyb2xlIjoiVVNFUiIsImlzX2FjdGl2ZSI6dHJ1ZSwiaXNfYWN0aXZhdGVkIjp0cnVlfQ.JAUF4FLYcs28VAzu-48iKiGCoXVahORWhnmKYpBkGrY')
+
   useEffect(() => {
-    handleGetPosts({ limit: 20 })
-    handleGetCategories()
-  }, [])
+    if (isFocus) {
+      handleGetPosts({ limit: 20 })
+      handleGetCategories()
+      getWishList.handleGetWishList()
+    }
+  }, [isFocus])
+
+  useEffect(() => {
+    if (putWishList.response) {
+      getWishList.handleGetWishList()
+    }
+  }, [putWishList.response])
+
+  useEffect(() => {
+    if (getWishList.error) {
+      console.log(getWishList.error)
+      return
+    }
+    if (getWishList.response) {
+      setWishlist(getWishList.response.posts)
+    }
+  }, [getWishList])
 
   useEffect(() => {
     setFilterData()
@@ -106,7 +135,7 @@ const UserViewPostsScreen = ({ navigation }) => {
           </View>
           <View className='flex-row mt-2 h-[150px]  px-2'>
             <View className='flex w-[55%]'>
-              <CardSmall product={postData[3]} navigation={navigation} />
+              <CardSmall product={postData[0]} navigation={navigation} />
             </View>
 
             <View className='flex w-[40%] flex-col justify-between ml-3'>
@@ -145,13 +174,29 @@ const UserViewPostsScreen = ({ navigation }) => {
                 numColumns={2}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item, i }) => (
-                  <CardCate
-                    setBookingProduct={setBookingProduct}
-                    setModalVisible={setModalVisible}
-                    product={item}
-                    i={i}
-                    navigation={navigation}
-                  />
+                  <>
+                    {wishlist.find((o) => o.id === item.id) ? (
+                      <CardCate
+                        setBookingProduct={setBookingProduct}
+                        setModalVisible={setModalVisible}
+                        product={item}
+                        i={i}
+                        navigation={navigation}
+                        inWishList={true}
+                        putWishList={putWishList.handlePutWishList}
+                      />
+                    ) : (
+                      <CardCate
+                        setBookingProduct={setBookingProduct}
+                        setModalVisible={setModalVisible}
+                        product={item}
+                        i={i}
+                        navigation={navigation}
+                        inWishList={false}
+                        putWishList={putWishList.handlePutWishList}
+                      />
+                    )}
+                  </>
                 )}
                 onEndReachedThreshold={0.1}
               />

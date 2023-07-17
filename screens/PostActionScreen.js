@@ -24,6 +24,7 @@ const PostActionScreen = ({
   } = useDeletePost()
 
   const handleEditPress = () => {
+    setModalVisible(false)
     navigation.navigate(SCREEN.EDIT_POST, { id })
   }
 

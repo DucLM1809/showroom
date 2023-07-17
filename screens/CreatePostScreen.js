@@ -204,7 +204,16 @@ const CreatePostScreen = ({ navigation }) => {
                     actions.setBold,
                     actions.setItalic,
                     actions.setUnderline,
-                    actions.heading1
+                    actions.insertLink,
+                    actions.keyboard,
+                    actions.setStrikethrough,
+                    actions.removeFormat,
+                    actions.checkboxList,
+                    actions.undo,
+                    actions.redo,
+                    actions.insertBulletsList,
+                    actions.insertOrderedList,
+                    actions.insertImage
                   ]}
                 />
               </View>

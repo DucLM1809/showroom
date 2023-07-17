@@ -137,11 +137,12 @@ const ViewPostsScreen = ({ navigation }) => {
       </TouchableOpacity>
 
       <Spinner visible={loading || !response} textContent={'Loading...'} />
-      {response?.map((item) => (
+      {response?.map((item, index) => (
         <>
           <Post
             navigation={navigation}
             id={item?.id}
+            index={index}
             item={item}
             handleGetPosts={handleGetPosts}
           />

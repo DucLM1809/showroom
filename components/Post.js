@@ -13,13 +13,13 @@ import GestureRecognizer from 'react-native-swipe-gestures'
 import RenderHtml from 'react-native-render-html'
 import { useWindowDimensions } from 'react-native'
 
-const Post = ({ navigation, item, handleGetPosts, id }) => {
+const Post = ({ navigation, item, handleGetPosts, id, index }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const { width } = useWindowDimensions()
   return (
     <TouchableOpacity
       onPress={() => navigation.navigate(SCREEN.DETAILS, { id })}
-      key={id}
+      key={id || index}
       className='bg-white my-2 mb-0 py-3'
     >
       <View className='flex-row justify-between px-4'>
@@ -44,6 +44,7 @@ const Post = ({ navigation, item, handleGetPosts, id }) => {
       </View>
 
       <View className='px-4 my-2'>
+        <Text className='font-semibold text-base mb-2'>{item?.title}</Text>
         <RenderHtml contentWidth={width} source={{ html: item?.description }} />
       </View>
 

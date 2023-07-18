@@ -46,6 +46,7 @@ const HomeScreen =  ({ navigation }) => {
 
   const getWishList = useGetWishList();
   const putWishList = usePutWishList();
+
   
 
   const getMyId = async ()=>{
@@ -55,7 +56,7 @@ const HomeScreen =  ({ navigation }) => {
 
   
 // AsyncStorage.setItem('myId','d18dc336-78f7-44c5-a537-fc782994f475')
-  // AsyncStorage.setItem(LOCAL_STORAGE_ITEMS.ACCESS_TOKEN,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHVkZW50MjE2MTk5OUBnbWFpbC5jb20iLCJ1c2VyX2lkIjoiZDE4ZGMzMzYtNzhmNy00NGM1LWE1MzctZmM3ODI5OTRmNDc1IiwiZXhwIjoxNjg5NzEwNjY5LCJyb2xlIjoiVVNFUiIsImlzX2FjdGl2ZSI6dHJ1ZSwiaXNfYWN0aXZhdGVkIjp0cnVlfQ.oH3hE0cYfQY7uLNHQjXMbghp1PsdszkdfgD9uPY3Tjw')
+  // AsyncStorage.setItem(LOCAL_STORAGE_ITEMS.ACCESS_TOKEN,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHVkZW50MjE2MTk5OUBnbWFpbC5jb20iLCJ1c2VyX2lkIjoiZDE4ZGMzMzYtNzhmNy00NGM1LWE1MzctZmM3ODI5OTRmNDc1IiwiZXhwIjoxNjg5NzE2NjkwLCJyb2xlIjoiVVNFUiIsImlzX2FjdGl2ZSI6dHJ1ZSwiaXNfYWN0aXZhdGVkIjp0cnVlfQ.flhlBiPSIQoZzHulPb1HNyUJN4Lhs9cua5sY_vDnooM')
 
   useEffect(() => {
     if(isFocus){

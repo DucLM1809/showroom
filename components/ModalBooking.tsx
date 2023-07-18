@@ -21,7 +21,7 @@ export interface props {
 const ModalBooking = ({ modalVisible, setModalVisible, product }: props) => {
   const [dateStr, setDateStr] = useState("");
   const [dateParse, setDateParse] = useState() as any;
-  const [note, setnote] = useState('')
+  const [note, setnote] = useState('.')
 
   const getBooking = useGetBooking()
   const postBooking = usePostBooking()
@@ -29,13 +29,13 @@ const ModalBooking = ({ modalVisible, setModalVisible, product }: props) => {
   useEffect(()=>{
     if(postBooking.error){
     
-      console.log(postBooking.response);
-      
+      console.log(postBooking.error.response.data.detail);
+      ToastAndroid.show("Please pick a date in the future", ToastAndroid.SHORT);
     }
     else if( postBooking.response){
       
     }
-  },[postBooking])
+  },[postBooking.handlePostBooing])
 
   return (
     <Modal

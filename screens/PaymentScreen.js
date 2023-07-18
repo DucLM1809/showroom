@@ -9,16 +9,11 @@ import { ScrollView } from '../tailwinds/tailwindComponent';
 import CardBook from '../components/CardBook';
 import { useGetBooking } from '../hooks/useBooking';
 import { useIsFocused } from '@react-navigation/native';
-import ModalPurchase from '../components/ModalPurchase';
 import { useGetMyPayments } from '../hooks/usePayment';
+import CardPay from '../components/CardPay';
 
-const BookingScreen = ({navigation}) => {
-
-  const getBooking = useGetBooking()
+const PaymentScreen = ({navigation}) => {
   const isFocus = useIsFocused()
-  const [bookingList, setbookingList] = useState([])
-  const [isModalVisible, setIsModalVisible] = useState(false)
-  const [paymentProduct,setPaymentProduct] = useState({})
 
   const getPayment = useGetMyPayments()
   const [paymentList, setPaymentList] = useState([])
@@ -29,7 +24,6 @@ const BookingScreen = ({navigation}) => {
     }
   },[isFocus])
 
-  
   useEffect(()=>{
     if(getPayment.error){
       console.log(getPayment.error)
@@ -39,41 +33,20 @@ const BookingScreen = ({navigation}) => {
       setPaymentList(getPayment.response)
     }
   },[getPayment])
-
-  useEffect(()=>{
-    if(isFocus){
-      getBooking.handleGetBooking()
-    }
-  },[isFocus])
-
-  useEffect(()=>{
-    if(getBooking.error){
-      console.log(getBooking.error)
-      return
-    }
-    if(getBooking.response){
-      setbookingList(getBooking.response)
-    }
-  },[getBooking])
   return (
     <SafeAreaView>
-      <Text className='text-center text-2xl font-semibold mt-4'>Booking List</Text>
+      <Text className='text-center text-2xl font-semibold mt-4'>Purchase List</Text>
         <ScrollView className='mt-5 h-[90%]'>
-        {bookingList.map((item,index)=>{
+        {paymentList.map((item,index)=>{
             return(
                 <View key={item.id}>
-                    <CardBook paid={paymentList.find(o=>o.postId===item.postId)?true:false} booking={item} i={index} navigation={navigation}></CardBook>
+                    <CardPay payment={item} i={index} navigation={navigation}></CardPay>
                 </View>
             )
         }) }
         </ScrollView>
-        <ModalPurchase
-          modalVisible={isModalVisible}
-          setModalVisible={setIsModalVisible}
-          product={paymentProduct}
-        />
     </SafeAreaView>
   )
 }
 
-export default BookingScreen
+export default PaymentScreen

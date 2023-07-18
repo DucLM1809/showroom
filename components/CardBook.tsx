@@ -18,11 +18,14 @@ export interface Props {
   booking: any;
   i: number;
   navigation: any;
+  setIsModalVisible: any;
+  setPaymentProduct: any;
+  paid: boolean
 }
 
 
 
-const CardBook = ({ booking, i, navigation }: Props) => {
+const CardBook = ({ booking, i, navigation, setIsModalVisible, setPaymentProduct,paid }: Props) => {
   const getPostById = useGetPostById()
   const [product, setproduct] = useState({}) as any
   const isFocus = useIsFocused()
@@ -49,7 +52,7 @@ const CardBook = ({ booking, i, navigation }: Props) => {
   return (
     <TouchableOpacity
       className={`flex-row h-[175px] w-[93%] mx-auto mb-4 relative   `}
-      onPress={() => navigation.navigate("Details", { id: product.postId })}
+      onPress={() => navigation.navigate("Details", { id: booking.postId })}
     >{
       product?.imageUrls&&
       <Image
@@ -65,14 +68,14 @@ const CardBook = ({ booking, i, navigation }: Props) => {
         <Text className=" text-lg mt-3 text-[#000000] h-[40%] overflow-hidden">{moment(booking.expectedVisitAt).format('yyyy-MM-DD HH:mm')}</Text>
         <View className="absolute bottom-0 flex-row justify-end w-full mb-2 mr-2">
            
-            <TouchableOpacity className="z-10 w-[40px] h-[40px] bg-[#ffffff] flex justify-center items-center rounded-full ml-2">
+           {!paid&& <TouchableOpacity className="z-10 w-[40px] h-[40px] bg-[#ffffff] flex justify-center items-center rounded-full ml-2" onPress={()=>{
+              setIsModalVisible(true)
+              setPaymentProduct(product)
+            }}>
                 <Icons name="payment" size={25}/>
-            </TouchableOpacity>
+            </TouchableOpacity>}
            
-            {/* <TouchableOpacity className="z-10 w-[100px] h-[40px] bg-white flex-row justify-center items-center rounded-full ml-2">
-            <Text className="mr-1">Cancel</Text>
-                <Icons name="pending-actions" size={25}/>
-            </TouchableOpacity> */}
+            
         </View>
      </View>
     </TouchableOpacity>

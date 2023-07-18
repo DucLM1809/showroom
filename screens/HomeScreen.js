@@ -24,7 +24,7 @@ import { useIsFocused } from '@react-navigation/native';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { LOCAL_STORAGE_ITEMS } from "../constants/common";
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen =  ({ navigation }) => {
   const dispatch = useDispatch();
   const { colors } = useTheme();
   const [selectedCate, setSelectedCate] = useState(0);
@@ -34,6 +34,7 @@ const HomeScreen = ({ navigation }) => {
   const [categoryData, setcategoryData] = useState([{ id: 0, name: "All" }]);
   const [postFilterData, setpostFilterData] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const [myId,setMyId] = useState('')
   const isFocus =useIsFocused()
 
   const { handleGetPosts, response: responseGetPost, error } = useGetPost();
@@ -45,12 +46,20 @@ const HomeScreen = ({ navigation }) => {
 
   const getWishList = useGetWishList();
   const putWishList = usePutWishList();
+  
 
-  // AsyncStorage.setItem(LOCAL_STORAGE_ITEMS.ACCESS_TOKEN,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHVkZW50MjE2MTk5OUBnbWFpbC5jb20iLCJ1c2VyX2lkIjoiZDE4ZGMzMzYtNzhmNy00NGM1LWE1MzctZmM3ODI5OTRmNDc1IiwiZXhwIjoxNjg5NTY1MDQ5LCJyb2xlIjoiVVNFUiIsImlzX2FjdGl2ZSI6dHJ1ZSwiaXNfYWN0aXZhdGVkIjp0cnVlfQ.5nEK1wVb_8x-kePQHEacnJLWdiByv-5OtsWHKAnW9r0')
+  const getMyId = async ()=>{
+    let id = await AsyncStorage.getItem('myId')
+    setMyId(id)
+  } 
+
+  
+// AsyncStorage.setItem('myId','d18dc336-78f7-44c5-a537-fc782994f475')
+  // AsyncStorage.setItem(LOCAL_STORAGE_ITEMS.ACCESS_TOKEN,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHVkZW50MjE2MTk5OUBnbWFpbC5jb20iLCJ1c2VyX2lkIjoiZDE4ZGMzMzYtNzhmNy00NGM1LWE1MzctZmM3ODI5OTRmNDc1IiwiZXhwIjoxNjg5NzEwNjY5LCJyb2xlIjoiVVNFUiIsImlzX2FjdGl2ZSI6dHJ1ZSwiaXNfYWN0aXZhdGVkIjp0cnVlfQ.oH3hE0cYfQY7uLNHQjXMbghp1PsdszkdfgD9uPY3Tjw')
 
   useEffect(() => {
     if(isFocus){
-
+      getMyId()
       handleGetPosts({ limit: 20 });
       handleGetCategories();
       getWishList.handleGetWishList();
@@ -111,11 +120,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <ScrollView>
       <SafeAreaView>
-        <View>
-          <TouchableOpacity className="mt-2 ml-3" onPress={() => {}}>
-            <Icons name="menu" size={36} color={colors.text} />
-          </TouchableOpacity>
-        </View>
+        
 
         <View>
           <TouchableOpacity className=" flex-1, h-[52px] flex-row border rounded-[52px] border-[#d9d9d9] items-center px-[24px] mx-4 my-4">
@@ -171,7 +176,7 @@ const HomeScreen = ({ navigation }) => {
           <View>
             <ScrollView className="flex mt-2  px-2 w-full ">
               <MasonryList
-                data={postFilterData}
+                data={postFilterData.filter(o=>o.ownerId!==myId)}
                 keyExtractor={(item) => item.id}
                 numColumns={2}
                 showsVerticalScrollIndicator={false}

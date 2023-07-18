@@ -28,12 +28,12 @@ const ModalBooking = ({ modalVisible, setModalVisible, product }: props) => {
 
   useEffect(()=>{
     if(postBooking.error){
-      ToastAndroid.show(`Booking failed: please choose a date in the future`,ToastAndroid.LONG)
+    
       console.log(postBooking.response);
       
     }
     else if( postBooking.response){
-      ToastAndroid.show(`Booking successfully `,ToastAndroid.LONG)
+      
     }
   },[postBooking])
 

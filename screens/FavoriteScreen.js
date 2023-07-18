@@ -9,12 +9,15 @@ import { ScrollView } from '../tailwinds/tailwindComponent';
 import { useGetWishList, usePutWishList } from '../hooks/useWishList';
 import { useIsFocused } from '@react-navigation/native';
 import Icons from '@expo/vector-icons/MaterialIcons'
+import ModalBooking from '../components/ModalBooking';
 
 const FavoriteScreen = ({navigation}) => {
   const [wishlistData, setwishlistData] = useState([])
   const getWishList = useGetWishList();
   const putWishList = usePutWishList();
   const isFocus = useIsFocused()
+  const [modalVisible, setModalVisible] = useState(false);
+  const [bookingProduct, setBookingProduct] = useState({});
 
   useEffect(()=>{
     if(isFocus){
@@ -50,6 +53,7 @@ const FavoriteScreen = ({navigation}) => {
             )
         })}</>
         :
+        
         <View className='mt-[50%] flex justify-center items-center  '>
           <Icons name='wysiwyg' size={50} color={'#666666'}/>
           <Text className=' text-center text-xl text-[#666666]'>No data</Text>
@@ -57,6 +61,11 @@ const FavoriteScreen = ({navigation}) => {
       }
 
         </ScrollView>
+        <ModalBooking
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          product={bookingProduct}
+        />
     </SafeAreaView>
   )
 }

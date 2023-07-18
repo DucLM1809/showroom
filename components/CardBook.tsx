@@ -1,4 +1,4 @@
-import { Iproduct } from "../mockData/products";
+
 import {
   Image,
   View,
@@ -10,8 +10,7 @@ import React, { useEffect, useState } from "react";
 import Icons from "@expo/vector-icons/MaterialIcons";
 import { useGetPostById } from "../hooks/usePost";
 import { useIsFocused } from "@react-navigation/native";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
-
+import moment from 'moment';
 
 
 
@@ -58,21 +57,22 @@ const CardBook = ({ booking, i, navigation }: Props) => {
         source={{ uri: product?.imageUrls[0]  }}
       />
     }
+    
 
      <View className="h-full w-[50%] bg-slate-200 rounded-r-2xl  flex relative pl-2 ">
         <Text className=" text-xl font-semibold">{product.title}</Text>
         <Text className="text-base">${product.price}</Text>
-        <Text className=" text-lg mt-3 text-[#000000] h-[40%] overflow-hidden">2023/07/21 00:05</Text>
+        <Text className=" text-lg mt-3 text-[#000000] h-[40%] overflow-hidden">{moment(booking.expectedVisitAt).format('yyyy-MM-DD HH:mm')}</Text>
         <View className="absolute bottom-0 flex-row justify-end w-full mb-2 mr-2">
            
             <TouchableOpacity className="z-10 w-[40px] h-[40px] bg-[#ffffff] flex justify-center items-center rounded-full ml-2">
                 <Icons name="payment" size={25}/>
             </TouchableOpacity>
            
-            <TouchableOpacity className="z-10 w-[100px] h-[40px] bg-white flex-row justify-center items-center rounded-full ml-2">
+            {/* <TouchableOpacity className="z-10 w-[100px] h-[40px] bg-white flex-row justify-center items-center rounded-full ml-2">
             <Text className="mr-1">Cancel</Text>
                 <Icons name="pending-actions" size={25}/>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
         </View>
      </View>
     </TouchableOpacity>

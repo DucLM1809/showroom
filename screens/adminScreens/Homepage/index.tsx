@@ -12,38 +12,14 @@ import {
   StyledTouchableOpacity,
 } from "../components/styled";
 import { getUserMe } from "../../../hooks/useUsers";
+import {
+  useGetBookings,
+  useGetPayments,
+  useGetPosts,
+  useGetUsers,
+} from "../../../hooks/useAdmin";
 
 const HomePage = ({ navigation }: TabsStackScreenProps<"Home">) => {
-  const data = [
-    {
-      title: "Bookings Management",
-      name: "BookingsManage",
-      amount: 21,
-      icons: "format-list-bulleted",
-      color: "black",
-    },
-    {
-      title: "Transactions Management",
-      name: "TransManage",
-      amount: 30,
-      icons: "monetization-on",
-      color: "black",
-    },
-    {
-      title: "Posts Management",
-      name: "PostsManage",
-      amount: 30,
-      icons: "post-add",
-      color: "black",
-    },
-    {
-      title: "Users Management",
-      name: "UsersManage",
-      amount: 200,
-      icons: "people",
-      color: "black",
-    },
-  ];
   const { colors } = useTheme();
   interface User {
     id: string;
@@ -59,7 +35,41 @@ const HomePage = ({ navigation }: TabsStackScreenProps<"Home">) => {
 
   const { response } = getUserMe();
   const user: User = response;
-  console.log(user);
+
+  const fetchUsers = useGetUsers();
+  const fetchPosts = useGetPosts();
+  const fetchBookings = useGetBookings();
+  const fetchPayments = useGetPayments();
+  const data = [
+    {
+      title: "Bookings Management",
+      name: "BookingsManage",
+      amount: fetchUsers.response.length,
+      icons: "format-list-bulleted",
+      color: "black",
+    },
+    {
+      title: "Transactions Management",
+      name: "TransManage",
+      amount: fetchPayments.response.length,
+      icons: "monetization-on",
+      color: "black",
+    },
+    {
+      title: "Posts Management",
+      name: "PostsManage",
+      amount: fetchPosts.res.length,
+      icons: "post-add",
+      color: "black",
+    },
+    {
+      title: "Users Management",
+      name: "UsersManage",
+      amount: fetchUsers.response.length,
+      icons: "people",
+      color: "black",
+    },
+  ];
 
   return (
     <ScrollView>

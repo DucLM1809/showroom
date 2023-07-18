@@ -13,7 +13,6 @@ export const useGetPosts = () => {
             const accessToken = await TokenService.getAccessToken()
             const res = await AxiosGet('admin/posts', {}, { headers: { Authorization: `Bearer ${accessToken}` } })
 
-            console.log(accessToken);
             if (res) {
                 setRes(res.data)
             }
@@ -33,7 +32,6 @@ export const updatePostStatus = async (postId, { status, adminNote }) => {
     const data = { status, adminNote }
     try {
         const response = await AxiosPut(`admin/posts/${postId}/status`, data)
-        console.log(response.data);
         return response.data;
     } catch (error) {
         console.log("ER", error);

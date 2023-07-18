@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { useTheme } from "@react-navigation/native";
@@ -213,11 +213,11 @@ const BookingsManage = ({ navigation }) => {
   };
 
   return (
-    <StyledView>
+    <ScrollView>
       {bookings?.map((booking) => {
         return <TicketBooking booking={booking} />;
       })}
-    </StyledView>
+    </ScrollView>
   );
 };
 

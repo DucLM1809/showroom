@@ -26,9 +26,7 @@ import RBSheet from "react-native-raw-bottom-sheet";
 
 const PostsManage = () => {
   const navigation = useNavigation();
-  const image = {
-    uri: "https://autopro8.mediacdn.vn/134505113543774208/2023/2/7/lamborghini-invencible-4-16756850516461900043085-1675733308714-167573330968768803893.jpg",
-  };
+
   const handlePostPress = (postId: string) => {
     navigation.navigate("PostDetail", { postId });
   };
@@ -73,33 +71,32 @@ const PostsManage = () => {
     bottomSheetRef.current.open();
   };
 
-  const [isViewNote, setIsViewNote] = useState(false);
-  const [adminNote, setAdminNote] = useState("");
-  const [postStatus, setPostStatus] = useState("");
-
-  const handleChangeStatus = async (id, status, adminNote) => {
-    await updatePostStatus(id, { status, adminNote });
-
-    const updatedPosts = posts.map((post) =>
-      post.id === id ? { ...post, status } : post
-    );
-    setPosts(updatedPosts);
-    setIsViewNote(false);
-    fetchPosts();
-    setAdminNote("");
-  };
-
-  const handleUpdateStatus = async (status) => {
-    const id = currentPostId.current;
-    if (status === "REVIEW_REJECTED" || status === "DELETE_REJECTED") {
-      setPostStatus(status);
-      setIsViewNote(true);
-    } else {
-      handleChangeStatus(id, status, adminNote);
-    }
-  };
-
   const CardPost = ({ post }: { post: Post }) => {
+    const [isViewNote, setIsViewNote] = useState(false);
+    const [adminNote, setAdminNote] = useState("");
+    const [postStatus, setPostStatus] = useState("");
+
+    const handleChangeStatus = async (id, status, adminNote) => {
+      await updatePostStatus(id, { status, adminNote });
+
+      const updatedPosts = posts.map((post) =>
+        post.id === id ? { ...post, status } : post
+      );
+      setPosts(updatedPosts);
+      setIsViewNote(false);
+      fetchPosts();
+      setAdminNote("");
+    };
+
+    const handleUpdateStatus = async (status) => {
+      const id = currentPostId.current;
+      if (status === "REVIEW_REJECTED" || status === "DELETE_REJECTED") {
+        setPostStatus(status);
+        setIsViewNote(true);
+      } else {
+        handleChangeStatus(id, status, adminNote);
+      }
+    };
     return (
       <StyledView
         style={{
@@ -108,7 +105,14 @@ const PostsManage = () => {
       >
         <TouchableOpacity onPress={() => handlePostPress(post.id)}>
           <StyledView className="h-56 w-[90%] mx-[5%] my-[5%] rounded-2xl overflow-hidden">
-            <StyledImageBackground className="flex-1" source={image}>
+            <StyledImageBackground
+              className="flex-1"
+              source={{
+                uri: post.imageUrls
+                  ? post.imageUrls[0]
+                  : "https://autopro8.mediacdn.vn/134505113543774208/2023/2/7/lamborghini-invencible-4-16756850516461900043085-1675733308714-167573330968768803893.jpg",
+              }}
+            >
               <StyledImage
                 source={{
                   uri: "https://img.freepik.com/free-icon/user_318-159711.jpg?w=2000",

@@ -6,7 +6,7 @@ import {
   StyledTouchableOpacity,
   StyledImage,
 } from "../components/styled";
-import { useGetPayments, useGetUsers } from "../../../hooks/useAdmin";
+import { useGetPayments } from "../../../hooks/useAdmin";
 import Popover, { PopoverPlacement } from "react-native-popover-view";
 
 interface User {

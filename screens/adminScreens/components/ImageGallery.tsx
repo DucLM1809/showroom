@@ -67,8 +67,6 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images }) => {
       />
     );
   } else if (images.length === 2) {
-    console.log("aaaa");
-
     return (
       <StyledView className="flex-row gap-1">
         {selectedImage && (

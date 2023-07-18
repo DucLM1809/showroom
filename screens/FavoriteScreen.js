@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { allProduct } from "../mockData/products";
 import CardFavo from "../components/CardFavo";
-import { ScrollView } from "../tailwinds/tailwindComponent";
+import { Image, ScrollView } from "../tailwinds/tailwindComponent";
 import { useGetWishList, usePutWishList } from "../hooks/useWishList";
 import { useIsFocused } from "@react-navigation/native";
 import Icons from "@expo/vector-icons/MaterialIcons";
@@ -20,25 +20,24 @@ const FavoriteScreen = ({ navigation }) => {
   const [bookingProduct, setBookingProduct] = useState({});
   const [modalVisiblePurchase, setModalVisiblePurchase] = useState(false);
 
-  const getPayment = useGetMyPayments()
-  const [paymentList, setPaymentList] = useState([])
+  const getPayment = useGetMyPayments();
+  const [paymentList, setPaymentList] = useState([]);
 
-  useEffect(()=>{
-    if(isFocus){
-      getPayment.handleGetMyPayment()
+  useEffect(() => {
+    if (isFocus) {
+      getPayment.handleGetMyPayment();
     }
-  },[isFocus])
+  }, [isFocus]);
 
-  
-  useEffect(()=>{
-    if(getPayment.error){
-      console.log(getPayment.error)
-      return
+  useEffect(() => {
+    if (getPayment.error) {
+      console.log(getPayment.error);
+      return;
     }
-    if(getPayment.response){
-      setPaymentList(getPayment.response)
+    if (getPayment.response) {
+      setPaymentList(getPayment.response);
     }
-  },[getPayment])
+  }, [getPayment]);
 
   useEffect(() => {
     if (isFocus) {
@@ -68,7 +67,11 @@ const FavoriteScreen = ({ navigation }) => {
               return (
                 <View key={item.id}>
                   <CardFavo
-                  paid={paymentList.find(o=>o.postId===item.id)? true: false}
+                    paid={
+                      paymentList.find((o) => o.postId === item.id)
+                        ? true
+                        : false
+                    }
                     setModalVisiblePurchase={setModalVisiblePurchase}
                     setBookingProduct={setBookingProduct}
                     setModalVisible={setModalVisible}
@@ -82,9 +85,12 @@ const FavoriteScreen = ({ navigation }) => {
             })}
           </>
         ) : (
-          <View className="mt-[50%] flex justify-center items-center  ">
-            <Icons name="wysiwyg" size={50} color={"#666666"} />
-            <Text className=" text-center text-xl text-[#666666]">No data</Text>
+          <View className="mt-[20%] h-[300px] flex justify-center items-center  ">
+            <Image
+              className="h-[90%] w-[50%] object-cover rounded-l-2xl"
+              source={require("../assets/nodata.jpg")}
+            />
+            <Text className="text-xl">No data</Text>
           </View>
         )}
       </ScrollView>

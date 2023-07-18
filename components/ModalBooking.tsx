@@ -1,15 +1,17 @@
 import {} from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   View,
   Text,
   TouchableOpacity,
+  TextInput,
 } from "../tailwinds/tailwindComponent";
 import { Iproduct } from "../mockData/products";
 import Icons from "@expo/vector-icons/MaterialIcons";
 import DatePicker from "react-native-modern-datepicker";
 import { ToastAndroid } from "react-native";
+import { useGetBooking, usePostBooking } from "../hooks/useBooking";
 
 export interface props {
   modalVisible: boolean;
@@ -18,7 +20,22 @@ export interface props {
 }
 const ModalBooking = ({ modalVisible, setModalVisible, product }: props) => {
   const [dateStr, setDateStr] = useState("");
-  const [dateParse, setDateParse] = useState();
+  const [dateParse, setDateParse] = useState() as any;
+  const [note, setnote] = useState('')
+
+  const getBooking = useGetBooking()
+  const postBooking = usePostBooking()
+
+  useEffect(()=>{
+    if(postBooking.error){
+      ToastAndroid.show(`Booking failed: please choose a date in the future`,ToastAndroid.LONG)
+      console.log(postBooking.response);
+      
+    }
+    else if( postBooking.response){
+      ToastAndroid.show(`Booking successfully `,ToastAndroid.LONG)
+    }
+  },[postBooking])
 
   return (
     <Modal
@@ -32,7 +49,7 @@ const ModalBooking = ({ modalVisible, setModalVisible, product }: props) => {
     >
       <View className="bg-[#0000008f] w-full h-full absolute bottom-0">
         <View className=" bg-white w-full h-[80%] absolute bottom-0 rounded-t-xl flex items-center">
-          <View className=" absolute w-full bottom-16 z-10 flex-row justify-center ">
+          <View className=" absolute w-full bottom-6 z-10 flex-row justify-center ">
             <TouchableOpacity
               className="  bg-[#bab9b9] py-2 px-5 rounded-2xl mr-6"
               onPress={() => {
@@ -57,11 +74,15 @@ const ModalBooking = ({ modalVisible, setModalVisible, product }: props) => {
                     +hours,
                     +minutes
                   );
-                  console.log(date);
+                  setDateParse(date)
                 } catch (error) {
                   ToastAndroid.show("Please pick a date", ToastAndroid.LONG);
                   return;
                 }
+                postBooking.handlePostBooing(product.id,{
+                  expectedVisitAt: dateParse,
+                  note: note
+                })
                 setModalVisible(false);
               }}
             >
@@ -71,6 +92,8 @@ const ModalBooking = ({ modalVisible, setModalVisible, product }: props) => {
 
           <Text className=" text-2xl font-bold mt-3">Booking</Text>
           <DatePicker onSelectedChange={(date) => setDateStr(date)} />
+          <TextInput className="border w-[90%] px-3 absolute bottom-20 bg-white rounded-lg" multiline  maxLength={60}
+        numberOfLines={3} value={note} onChangeText={setnote} placeholder="Note"></TextInput>
         </View>
       </View>
     </Modal>

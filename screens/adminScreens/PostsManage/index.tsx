@@ -17,6 +17,7 @@ import {
   StyledText,
   StyledImageBackground,
   StyledModal,
+  StyledPressable,
 } from "../components/styled";
 import { useNavigation } from "@react-navigation/native";
 import { updatePostStatus, useGetPosts } from "../../../hooks/useAdmin";
@@ -55,6 +56,7 @@ const PostsManage = () => {
   const [posts, setPosts] = useState<Post[]>([]);
 
   const { res, error, fetchPosts } = useGetPosts();
+
   useEffect(() => {
     if (res) {
       setPosts(res);
@@ -77,14 +79,14 @@ const PostsManage = () => {
 
   const handleChangeStatus = async (id, status, adminNote) => {
     await updatePostStatus(id, { status, adminNote });
-    fetchPosts();
-    setAdminNote("");
 
     const updatedPosts = posts.map((post) =>
       post.id === id ? { ...post, status } : post
     );
     setPosts(updatedPosts);
     setIsViewNote(false);
+    fetchPosts();
+    setAdminNote("");
   };
 
   const handleUpdateStatus = async (status) => {
@@ -99,7 +101,11 @@ const PostsManage = () => {
 
   const CardPost = ({ post }: { post: Post }) => {
     return (
-      <StyledView>
+      <StyledView
+        style={{
+          marginBottom: -20,
+        }}
+      >
         <TouchableOpacity onPress={() => handlePostPress(post.id)}>
           <StyledView className="h-56 w-[90%] mx-[5%] my-[5%] rounded-2xl overflow-hidden">
             <StyledImageBackground className="flex-1" source={image}>
@@ -140,7 +146,7 @@ const PostsManage = () => {
             }, 50);
           }}
         >
-          <StyledView className="flex flex-row self-center gap-4 mb-[5%]">
+          <StyledView className="flex flex-row self-center">
             <StyledView className="bg-blue-500 py-2 items-center rounded-lg p-2">
               <StyledText className="font-semibold text-white">
                 {post.status}
@@ -184,7 +190,7 @@ const PostsManage = () => {
             })}
           </ScrollView>
         </RBSheet>
-        <StyledView style={styles.centeredView}>
+        <StyledView className="flex-1 items-center mt-10 justify-center">
           <Modal
             animationType="slide"
             transparent={true}
@@ -194,24 +200,45 @@ const PostsManage = () => {
             }}
           >
             <StyledView className="flex-1 justify-center items-center mt-10">
-              <View style={styles.modalView}>
-                <Text style={styles.modalText}>Admin Note</Text>
+              <StyledView style={styles.modalView}>
+                <StyledText className="align-middle mb-3 text-base">
+                  Admin Note
+                </StyledText>
                 <TextInput
                   style={styles.input}
                   onChangeText={(text) => setAdminNote(text)}
                   value={adminNote}
                   placeholder="Enter admin note"
                 />
-                <Pressable
-                  style={[styles.button, styles.buttonClose]}
-                  onPress={() => {
-                    setIsViewNote(false);
-                    handleChangeStatus(post.id, postStatus, adminNote);
-                  }}
-                >
-                  <Text style={styles.textStyle}>Submit</Text>
-                </Pressable>
-              </View>
+
+                <StyledView className="flex flex-row">
+                  <StyledPressable
+                    disabled={adminNote === ""}
+                    className={`rounded-lg mx-2 p-2 shadow-md ${
+                      adminNote === "" ? "bg-blue-200" : "bg-blue-500"
+                    }`}
+                    onPress={() => {
+                      setIsViewNote(false);
+                      handleChangeStatus(selectedItem, postStatus, adminNote);
+                    }}
+                  >
+                    <StyledText className="align-middle font-bold text-white">
+                      Submit
+                    </StyledText>
+                  </StyledPressable>
+                  <StyledPressable
+                    className={`rounded-lg p-2 shadow-md mx-2 bg-red-500`}
+                    onPress={() => {
+                      setIsViewNote(false);
+                      setAdminNote("");
+                    }}
+                  >
+                    <StyledText className="align-middle font-bold text-white">
+                      Cancel
+                    </StyledText>
+                  </StyledPressable>
+                </StyledView>
+              </StyledView>
             </StyledView>
           </Modal>
         </StyledView>
@@ -228,17 +255,12 @@ const PostsManage = () => {
   );
 };
 const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
   modalView: {
     margin: 20,
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 35,
+    paddingVertical: 25,
+    paddingHorizontal: 40,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -249,26 +271,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
   },
-  button: {
-    borderRadius: 20,
-    padding: 10,
-    elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
-  },
-  textStyle: {
-    color: "white",
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-  },
+
   input: {
     height: 40,
     borderColor: "gray",

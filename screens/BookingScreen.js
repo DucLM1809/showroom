@@ -53,8 +53,6 @@ const BookingScreen = ({ navigation }) => {
     }
   }, [getBooking.response])
 
-  console.log('BOOKING: ', bookingList)
-
   return (
     <SafeAreaView>
       <Text className='text-center text-2xl font-semibold mt-4'>
@@ -83,6 +81,7 @@ const BookingScreen = ({ navigation }) => {
                       navigation={navigation}
                       setIsModalVisible={setIsModalVisible}
                       setPaymentProduct={setPaymentProduct}
+                      handleGetBooking={getBooking.handleGetBooking}
                     />
                   </View>
                 )

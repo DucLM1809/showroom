@@ -213,7 +213,6 @@ export const useGetPost = () => {
       })
 
       if (res) {
-        console.log('RES: ', res?.data)
         setResponse(res?.data)
         setError(null)
         setLoading(false)

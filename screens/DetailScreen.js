@@ -20,6 +20,7 @@ import { useGetWishList, usePutWishList } from '../hooks/useWishList'
 import ModalPurchase from '../components/ModalPurchase'
 import { useGetMyPayments } from '../hooks/usePayment'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import { useProfile } from '../hooks/useAuth'
 
 const DetailScreen = ({ route, navigation }) => {
   const width = Dimensions.get('window').width
@@ -39,15 +40,18 @@ const DetailScreen = ({ route, navigation }) => {
 
   const getPayment = useGetMyPayments()
   const [paymentList, setPaymentList] = useState([])
+  const { error: errProfile, handleGetProfile, response: responseProfile } = useProfile()
 
-  const getMyId = async () => {
-    let id = await AsyncStorage.getItem('myId')
-    setMyId(id)
-  }
+
+  // const getMyId = async () => {
+  //   let id = await AsyncStorage.getItem('myId')
+  //   setMyId(id)
+  // }
 
   useEffect(() => {
     if (isFocus) {
-      getMyId()
+      // getMyId()
+      handleGetProfile()
       getPayment.handleGetMyPayment()
     }
   }, [isFocus])
@@ -187,7 +191,7 @@ const DetailScreen = ({ route, navigation }) => {
             )
           })}
         </View>
-        {myId === product.ownerId && (
+        {responseProfile?.id === product.ownerId && (
           <Text className='text-base font-normal ml-2 mt-4'>
             Admin note: {product?.adminNote}
           </Text>

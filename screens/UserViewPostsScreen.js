@@ -21,6 +21,7 @@ import ModalBooking from '../components/ModalBooking'
 import { useGetCategories, useGetPost } from '../hooks/usePost'
 import { useGetWishList, usePutWishList } from '../hooks/useWishList'
 import { useIsFocused } from '@react-navigation/native'
+import { useProfile } from '../hooks/useAuth'
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { LOCAL_STORAGE_ITEMS } from "../constants/common";
 
@@ -43,21 +44,23 @@ const UserViewPostsScreen = ({ navigation }) => {
     response: responseGetCategories,
     error: errorGetCate
   } = useGetCategories()
+  const { error: errProfile, handleGetProfile, response: responseProfile } = useProfile()
 
   const getWishList = useGetWishList()
   const putWishList = usePutWishList()
 
-  const getMyId = async () => {
-    let id = await AsyncStorage.getItem('myId')
-    setMyId(id)
-  }
+  // const getMyId = async () => {
+  //   let id = await AsyncStorage.getItem('myId')
+  //   setMyId(id)
+  // }
 
   // AsyncStorage.setItem('myId','d18dc336-78f7-44c5-a537-fc782994f475')
   // AsyncStorage.setItem(LOCAL_STORAGE_ITEMS.ACCESS_TOKEN,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHVkZW50MjE2MTk5OUBnbWFpbC5jb20iLCJ1c2VyX2lkIjoiZDE4ZGMzMzYtNzhmNy00NGM1LWE1MzctZmM3ODI5OTRmNDc1IiwiZXhwIjoxNjg5NzIwNTc5LCJyb2xlIjoiVVNFUiIsImlzX2FjdGl2ZSI6dHJ1ZSwiaXNfYWN0aXZhdGVkIjp0cnVlfQ.nDyyQ_aTq0AI9yaSxc8haks3nPJmRl2xnm49766dg3s')
 
   useEffect(() => {
     if (isFocus) {
-      getMyId()
+      // getMyId()
+      handleGetProfile()
       handleGetPosts({ limit: 20 })
       handleGetCategories()
       getWishList.handleGetWishList()
@@ -171,7 +174,7 @@ const UserViewPostsScreen = ({ navigation }) => {
           <View>
             <ScrollView className='flex mt-2  px-2 w-full '>
               <MasonryList
-                data={postFilterData.filter((o) => o.ownerId !== myId)}
+                data={postFilterData.filter((o) => o.ownerId !== responseProfile?.id)}
                 keyExtractor={(item) => item.id}
                 numColumns={2}
                 showsVerticalScrollIndicator={false}

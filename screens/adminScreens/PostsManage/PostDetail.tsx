@@ -47,7 +47,6 @@ const PostDetail = ({ navigation, route }) => {
   const { postId } = route.params
   const { res, error } = useGetPosts()
   const filteredPost: Post = res.find((item) => item.id === postId)
-  console.log(filteredPost)
   const postDescription = filteredPost?.description ?? ''
 
   return (

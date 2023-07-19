@@ -6,11 +6,34 @@
   <component name="ChangeListManager">
     <list default="true" id="3dec8a81-4ba2-4a6e-92d5-053a301b453e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../hooks/useAdmin.js" beforeDir="false" afterPath="$PROJECT_DIR$/../hooks/useAdmin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/adminScreens/BookingsManage/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/adminScreens/BookingsManage/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/adminScreens/Homepage/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/adminScreens/Homepage/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/adminScreens/PostsManage/PostDetail.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/adminScreens/PostsManage/PostDetail.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/adminScreens/PostsManage/constants.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/adminScreens/PostsManage/constants.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/adminScreens/PostsManage/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/adminScreens/PostsManage/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/adminScreens/TransManage/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/adminScreens/TransManage/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/adminScreens/UsersManage/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/adminScreens/UsersManage/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/adminScreens/components/CardHome.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/adminScreens/components/CardHome.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/adminScreens/components/ImageGallery.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/adminScreens/components/ImageGallery.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../screens/adminScreens/components/styled.ts" beforeDir="false" afterPath="$PROJECT_DIR$/../screens/adminScreens/components/styled.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ExternalProjectsManager">
+    <system id="GRADLE">
+      <state>
+        <projects_view>
+          <tree_state>
+            <expand />
+            <select />
+          </tree_state>
+        </projects_view>
+      </state>
+    </system>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />

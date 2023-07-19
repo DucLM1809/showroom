@@ -4,7 +4,11 @@ import {
   ScrollView,
   ImageBackground,
   TouchableOpacity,
-  Modal
+  Modal,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  SafeAreaView
 } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import {
@@ -12,22 +16,20 @@ import {
   StyledImage,
   StyledText,
   StyledImageBackground,
-  StyledModal
+  StyledModal,
+  StyledPressable
 } from '../components/styled'
-import { useSelector } from 'react-redux'
 import { useNavigation } from '@react-navigation/native'
-import axios from 'axios'
 import { updatePostStatus, useGetPosts } from '../../../hooks/useAdmin'
 import { STATUS } from './constants'
 import RBSheet from 'react-native-raw-bottom-sheet'
+import { SCREEN } from '../../../constants/screen'
 
 const PostsManage = () => {
   const navigation = useNavigation()
-  const image = {
-    uri: 'https://autopro8.mediacdn.vn/134505113543774208/2023/2/7/lamborghini-invencible-4-16756850516461900043085-1675733308714-167573330968768803893.jpg'
-  }
+
   const handlePostPress = (postId: string) => {
-    navigation.navigate('PostDetail', { postId })
+    navigation.navigate(SCREEN.DETAILS, { id: postId })
   }
 
   interface Post {
@@ -41,7 +43,8 @@ const PostsManage = () => {
     status:
       | 'SOLD'
       | 'AVAILABLE'
-      | 'REJECTED'
+      | 'DELETE_REJECTED'
+      | 'REVIEW_REJECTED'
       | 'RESERVED'
       | 'UNDER REVIEW'
       | 'AWAITING DELETION'
@@ -51,7 +54,8 @@ const PostsManage = () => {
   }
   const [posts, setPosts] = useState<Post[]>([])
 
-  const { res, error } = useGetPosts()
+  const { res, error, fetchPosts } = useGetPosts()
+
   useEffect(() => {
     if (res) {
       setPosts(res)
@@ -68,23 +72,48 @@ const PostsManage = () => {
     bottomSheetRef.current.open()
   }
 
-  const handleUpdateStatus = async (status) => {
-    const id = currentPostId.current
-    const adminNote = status === 'REJECTED' ? 'Note' : ''
-    await updatePostStatus(id, { status, adminNote })
-
-    const updatedPosts = posts.map((post) =>
-      post.id === id ? { ...post, status } : post
-    )
-    setPosts(updatedPosts)
-  }
-
   const CardPost = ({ post }: { post: Post }) => {
+    const [isViewNote, setIsViewNote] = useState(false)
+    const [adminNote, setAdminNote] = useState('')
+    const [postStatus, setPostStatus] = useState('')
+
+    const handleChangeStatus = async (id, status, adminNote) => {
+      await updatePostStatus(id, { status, adminNote })
+
+      const updatedPosts = posts.map((post) =>
+        post.id === id ? { ...post, status } : post
+      )
+      setPosts(updatedPosts)
+      setIsViewNote(false)
+      fetchPosts()
+      setAdminNote('')
+    }
+
+    const handleUpdateStatus = async (status) => {
+      const id = currentPostId.current
+      if (status === 'REVIEW_REJECTED' || status === 'DELETE_REJECTED') {
+        setPostStatus(status)
+        setIsViewNote(true)
+      } else {
+        handleChangeStatus(id, status, adminNote)
+      }
+    }
     return (
-      <StyledView>
+      <StyledView
+        style={{
+          marginBottom: -20
+        }}
+      >
         <TouchableOpacity onPress={() => handlePostPress(post.id)}>
           <StyledView className='h-56 w-[90%] mx-[5%] my-[5%] rounded-2xl overflow-hidden'>
-            <StyledImageBackground className='flex-1' source={image}>
+            <StyledImageBackground
+              className='flex-1'
+              source={{
+                uri: post.imageUrls
+                  ? post.imageUrls[0]
+                  : 'https://autopro8.mediacdn.vn/134505113543774208/2023/2/7/lamborghini-invencible-4-16756850516461900043085-1675733308714-167573330968768803893.jpg'
+              }}
+            >
               <StyledImage
                 source={{
                   uri: 'https://img.freepik.com/free-icon/user_318-159711.jpg?w=2000'
@@ -105,7 +134,7 @@ const PostsManage = () => {
                 {post.categories.map((category) => {
                   return (
                     <StyledView className=' py-2 px-4 mx-2 bg-slate-100 rounded-xl opacity-80'>
-                      <StyledText>{category}</StyledText>
+                      <StyledText>{category.name}</StyledText>
                     </StyledView>
                   )
                 })}
@@ -122,7 +151,7 @@ const PostsManage = () => {
             }, 50)
           }}
         >
-          <StyledView className='flex flex-row self-center gap-4 mb-[5%]'>
+          <StyledView className='flex flex-row self-center'>
             <StyledView className='bg-blue-500 py-2 items-center rounded-lg p-2'>
               <StyledText className='font-semibold text-white'>
                 {post.status}
@@ -130,6 +159,7 @@ const PostsManage = () => {
             </StyledView>
           </StyledView>
         </TouchableOpacity>
+
         <RBSheet
           ref={bottomSheetRef}
           height={200}
@@ -165,17 +195,95 @@ const PostsManage = () => {
             })}
           </ScrollView>
         </RBSheet>
+        <StyledView className='flex-1 items-center mt-10 justify-center'>
+          <Modal
+            animationType='slide'
+            transparent={true}
+            visible={isViewNote}
+            onRequestClose={() => {
+              setIsViewNote(!isViewNote)
+            }}
+          >
+            <StyledView className='flex-1 justify-center items-center mt-10'>
+              <StyledView style={styles.modalView}>
+                <StyledText className='align-middle mb-3 text-base'>
+                  Admin Note
+                </StyledText>
+                <TextInput
+                  style={styles.input}
+                  onChangeText={(text) => setAdminNote(text)}
+                  value={adminNote}
+                  placeholder='Enter admin note'
+                />
+
+                <StyledView className='flex flex-row'>
+                  <StyledPressable
+                    disabled={adminNote === ''}
+                    className={`rounded-lg mx-2 p-2 shadow-md ${
+                      adminNote === '' ? 'bg-blue-200' : 'bg-blue-500'
+                    }`}
+                    onPress={() => {
+                      setIsViewNote(false)
+                      handleChangeStatus(selectedItem, postStatus, adminNote)
+                    }}
+                  >
+                    <StyledText className='align-middle font-bold text-white'>
+                      Submit
+                    </StyledText>
+                  </StyledPressable>
+                  <StyledPressable
+                    className={`rounded-lg p-2 shadow-md mx-2 bg-red-500`}
+                    onPress={() => {
+                      setIsViewNote(false)
+                      setAdminNote('')
+                    }}
+                  >
+                    <StyledText className='align-middle font-bold text-white'>
+                      Cancel
+                    </StyledText>
+                  </StyledPressable>
+                </StyledView>
+              </StyledView>
+            </StyledView>
+          </Modal>
+        </StyledView>
       </StyledView>
     )
   }
 
   return (
     <ScrollView>
-      {posts.map((post) => {
-        return <CardPost post={post} />
+      {posts?.map((post, index) => {
+        return <CardPost key={post?.id || index} post={post} />
       })}
     </ScrollView>
   )
 }
+const styles = StyleSheet.create({
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    paddingVertical: 25,
+    paddingHorizontal: 40,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 10,
+    paddingHorizontal: 10
+  }
+})
 
 export default PostsManage

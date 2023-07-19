@@ -52,7 +52,6 @@ const CardHome: React.FC<CardProps> = ({
         <Divider style={{ marginVertical: 5 }} color="grey" />
         <StyledView className="flex-row justify-between pt-2">
           <StyledText className="font-bold self-end">View</StyledText>
-          <StyledText className="font-bold">Add </StyledText>
         </StyledView>
       </StyledView>
     </TouchableOpacity>

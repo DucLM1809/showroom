@@ -41,7 +41,7 @@ const EditProfileScreen = ({ navigation }) => {
     if (response) {
       setValue('firstName', response?.firstName)
       setValue('lastName', response?.lastName)
-      setValue('fullName', response?.fullName)
+      setValue('phoneNumber', response?.phoneNumber)
       setAvatarUrl(response?.avatarUrl)
     }
   }, [response])
@@ -197,16 +197,6 @@ const EditProfileScreen = ({ navigation }) => {
                 placeholder='Last Name'
                 control={control}
                 name='lastName'
-              />
-            </View>
-
-            <View className='mb-4'>
-              <Text className='font-semibold mb-2'>Full Name</Text>
-
-              <CustomInput
-                placeholder='Full Name'
-                control={control}
-                name='fullName'
               />
             </View>
 

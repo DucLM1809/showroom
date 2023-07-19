@@ -22,6 +22,8 @@ import { useGetCategories, useGetPost } from '../hooks/usePost'
 import { useGetWishList, usePutWishList } from '../hooks/useWishList'
 import { useIsFocused } from '@react-navigation/native'
 import { useProfile } from '../hooks/useAuth'
+import { POST_STATUS } from '../constants/post'
+import { useGetBooking } from '../hooks/useBooking'
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 // import { LOCAL_STORAGE_ITEMS } from "../constants/common";
 
@@ -44,7 +46,13 @@ const UserViewPostsScreen = ({ navigation }) => {
     response: responseGetCategories,
     error: errorGetCate
   } = useGetCategories()
-  const { error: errProfile, handleGetProfile, response: responseProfile } = useProfile()
+  const {
+    error: errProfile,
+    handleGetProfile,
+    response: responseProfile
+  } = useProfile()
+
+  const getBooking = useGetBooking()
 
   const getWishList = useGetWishList()
   const putWishList = usePutWishList()
@@ -61,9 +69,10 @@ const UserViewPostsScreen = ({ navigation }) => {
     if (isFocus) {
       // getMyId()
       handleGetProfile()
-      handleGetPosts({ limit: 20 })
+      handleGetPosts({ limit: 20, status: POST_STATUS.AVAILABLE })
       handleGetCategories()
       getWishList.handleGetWishList()
+      getBooking.handleGetBooking()
     }
   }, [isFocus])
 
@@ -85,7 +94,7 @@ const UserViewPostsScreen = ({ navigation }) => {
 
   useEffect(() => {
     setFilterData()
-  }, [postData])
+  }, [postData, responseGetPost])
 
   useEffect(() => {
     if (error) {
@@ -132,27 +141,29 @@ const UserViewPostsScreen = ({ navigation }) => {
         </View>
 
         {/* HOT */}
-        <View className='my-1'>
-          <View className=''>
-            <View className='flex-row justify-between px-5 items-end'>
-              <Text className='text-xl font-bold'>Suggest Products</Text>
+        {postData?.length > 0 && (
+          <View className='my-1'>
+            <View className=''>
+              <View className='flex-row justify-between px-5 items-end'>
+                <Text className='text-xl font-bold'>Suggest Products</Text>
+              </View>
             </View>
-          </View>
-          <View className='flex-row mt-2 h-[150px]  px-2'>
-            <View className='flex w-[55%]'>
-              <CardSmall product={postData[0]} navigation={navigation} />
-            </View>
+            <View className='flex-row mt-2 h-[150px]  px-2'>
+              <View className='flex w-[55%]'>
+                <CardSmall product={postData[0]} navigation={navigation} />
+              </View>
 
-            <View className='flex w-[40%] flex-col justify-between ml-3'>
-              <View className='h-[47%]'>
-                <CardSmall product={postData[1]} navigation={navigation} />
-              </View>
-              <View className='h-[47%]'>
-                <CardSmall product={postData[2]} navigation={navigation} />
+              <View className='flex w-[40%] flex-col justify-between ml-3'>
+                <View className='h-[47%]'>
+                  <CardSmall product={postData[1]} navigation={navigation} />
+                </View>
+                <View className='h-[47%]'>
+                  <CardSmall product={postData[2]} navigation={navigation} />
+                </View>
               </View>
             </View>
           </View>
-        </View>
+        )}
 
         {/* CATE */}
 
@@ -174,7 +185,9 @@ const UserViewPostsScreen = ({ navigation }) => {
           <View>
             <ScrollView className='flex mt-2  px-2 w-full '>
               <MasonryList
-                data={postFilterData.filter((o) => o.ownerId !== responseProfile?.id)}
+                data={postFilterData.filter(
+                  (o) => o.ownerId !== responseProfile?.id
+                )}
                 keyExtractor={(item) => item.id}
                 numColumns={2}
                 showsVerticalScrollIndicator={false}
@@ -182,6 +195,7 @@ const UserViewPostsScreen = ({ navigation }) => {
                   <>
                     {wishlist.find((o) => o.id === item.id) ? (
                       <CardCate
+                        key={item.id}
                         setBookingProduct={setBookingProduct}
                         setModalVisible={setModalVisible}
                         product={item}
@@ -189,9 +203,11 @@ const UserViewPostsScreen = ({ navigation }) => {
                         navigation={navigation}
                         inWishList={true}
                         putWishList={putWishList.handlePutWishList}
+                        listBooking={getBooking.response}
                       />
                     ) : (
                       <CardCate
+                        key={item.id}
                         setBookingProduct={setBookingProduct}
                         setModalVisible={setModalVisible}
                         product={item}
@@ -199,6 +215,7 @@ const UserViewPostsScreen = ({ navigation }) => {
                         navigation={navigation}
                         inWishList={false}
                         putWishList={putWishList.handlePutWishList}
+                        listBooking={getBooking.response}
                       />
                     )}
                   </>
@@ -212,6 +229,8 @@ const UserViewPostsScreen = ({ navigation }) => {
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}
           product={bookingProduct}
+          handleGetBooking={getBooking.handleGetBooking}
+          handleGetPosts={handleGetPosts}
         />
       </SafeAreaView>
     </ScrollView>

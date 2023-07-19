@@ -21,6 +21,7 @@ import ModalPurchase from '../components/ModalPurchase'
 import { useGetMyPayments } from '../hooks/usePayment'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useProfile } from '../hooks/useAuth'
+import RenderHTML from 'react-native-render-html'
 
 const DetailScreen = ({ route, navigation }) => {
   const width = Dimensions.get('window').width
@@ -40,8 +41,11 @@ const DetailScreen = ({ route, navigation }) => {
 
   const getPayment = useGetMyPayments()
   const [paymentList, setPaymentList] = useState([])
-  const { error: errProfile, handleGetProfile, response: responseProfile } = useProfile()
-
+  const {
+    error: errProfile,
+    handleGetProfile,
+    response: responseProfile
+  } = useProfile()
 
   // const getMyId = async () => {
   //   let id = await AsyncStorage.getItem('myId')
@@ -169,8 +173,10 @@ const DetailScreen = ({ route, navigation }) => {
           {product.title}
         </Text>
 
+        <Text className='text-xl font-bold ml-2 '>${product.price}</Text>
+
         <View className='ml-3 mt-4'>
-          <RenderHtml
+          <RenderHTML
             className='text-base font-normal'
             contentWidth={width}
             source={{ html: product?.description }}
@@ -197,37 +203,38 @@ const DetailScreen = ({ route, navigation }) => {
           </Text>
         )}
       </View>
-      <View className='absolute bottom-0 flex-row justify-between w-[100vw] px-2 items-center'>
-        <Text className='text-xl font-bold ml-2 '>${product.price}</Text>
+      <View className='absolute bottom-4 justify-between w-[100vw] px-2 items-center'>
         <View className='flex-row'>
           {paymentList.find((o) => o.postId == product.id) ? (
             <></>
           ) : (
-            <TouchableOpacity
-              className=' flex-row items-center bg-[#eb2323] rounded-l-full py-2 pr-5 pl-2'
-              onPress={() => {
-                setModalVisiblePurchase(true)
-                setBookingProduct(product)
-              }}
-            >
-              <View className=' bg-white rounded-full p-2 mr-2'>
-                <Icons name='payment' size={30} />
-              </View>
-              <Text className='text-white text-lg '>Purchase</Text>
-            </TouchableOpacity>
-          )}
-          <TouchableOpacity
-            className=' flex-row items-center bg-[#000000] rounded-r-full py-2 pr-2 pl-5'
-            onPress={() => {
-              setModalVisible(true)
-              setBookingProduct(product)
-            }}
-          >
-            <Text className='text-white text-lg mr-2'>Booking</Text>
-            <View className=' bg-white rounded-full p-2'>
-              <Icons name='pending-actions' size={30} />
+            <View className='flex-row'>
+              <TouchableOpacity
+                className=' flex-row items-center bg-[#eb2323] rounded-l-full py-2 pr-5 pl-2'
+                onPress={() => {
+                  setModalVisiblePurchase(true)
+                  setBookingProduct(product)
+                }}
+              >
+                <View className=' bg-white rounded-full p-2 mr-2'>
+                  <Icons name='payment' size={30} />
+                </View>
+                <Text className='text-white text-lg '>Purchase</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className=' flex-row items-center bg-[#000000] rounded-r-full py-2 pr-2 pl-5'
+                onPress={() => {
+                  setModalVisible(true)
+                  setBookingProduct(product)
+                }}
+              >
+                <Text className='text-white text-lg mr-2'>Booking</Text>
+                <View className=' bg-white rounded-full p-2'>
+                  <Icons name='pending-actions' size={30} />
+                </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+          )}
         </View>
 
         <ModalPurchase

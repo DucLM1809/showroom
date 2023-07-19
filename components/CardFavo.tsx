@@ -20,6 +20,7 @@ export interface Props {
   setBookingProduct: any
   setModalVisiblePurchase: any
   paid: boolean
+  listBooking: any
 }
 
 const CardFavo = ({
@@ -30,7 +31,8 @@ const CardFavo = ({
   setModalVisible,
   setBookingProduct,
   setModalVisiblePurchase,
-  paid
+  paid,
+  listBooking
 }: Props) => {
   const [isVisibleModal, setIsVisibleModal] = useState(false)
   const ModalConfirm = (props) => {
@@ -143,15 +145,17 @@ const CardFavo = ({
               <Icons name='payment' size={25} />
             </TouchableOpacity>
           )}
-          <TouchableOpacity
-            className='z-10 w-[40px] h-[40px] bg-white flex justify-center items-center rounded-full ml-2'
-            onPress={() => {
-              setModalVisible(true)
-              setBookingProduct(product)
-            }}
-          >
-            <Icons name='pending-actions' size={25} />
-          </TouchableOpacity>
+          {!listBooking?.find((item: any) => item?.postId === product?.id) && (
+            <TouchableOpacity
+              className='z-10 w-[40px] h-[40px] bg-white flex justify-center items-center rounded-full ml-2'
+              onPress={() => {
+                setModalVisible(true)
+                setBookingProduct(product)
+              }}
+            >
+              <Icons name='pending-actions' size={25} />
+            </TouchableOpacity>
+          )}
         </View>
       </View>
       {isVisibleModal && <ModalConfirm />}

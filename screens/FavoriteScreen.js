@@ -1,96 +1,106 @@
-import { View, Text } from "react-native";
-import React, { useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { allProduct } from "../mockData/products";
-import CardFavo from "../components/CardFavo";
-import { Image, ScrollView } from "../tailwinds/tailwindComponent";
-import { useGetWishList, usePutWishList } from "../hooks/useWishList";
-import { useIsFocused } from "@react-navigation/native";
-import Icons from "@expo/vector-icons/MaterialIcons";
-import ModalBooking from "../components/ModalBooking";
-import ModalPurchase from "../components/ModalPurchase";
-import { useGetMyPayments } from "../hooks/usePayment";
+import { View, Text } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { allProduct } from '../mockData/products'
+import CardFavo from '../components/CardFavo'
+import { Image, ScrollView } from '../tailwinds/tailwindComponent'
+import { useGetWishList, usePutWishList } from '../hooks/useWishList'
+import { useIsFocused } from '@react-navigation/native'
+import Icons from '@expo/vector-icons/MaterialIcons'
+import ModalBooking from '../components/ModalBooking'
+import ModalPurchase from '../components/ModalPurchase'
+import { useGetMyPayments } from '../hooks/usePayment'
+import { POST_STATUS } from '../constants/post'
+import { useGetBooking } from '../hooks/useBooking'
 
 const FavoriteScreen = ({ navigation }) => {
-  const [wishlistData, setwishlistData] = useState([]);
-  const getWishList = useGetWishList();
-  const putWishList = usePutWishList();
-  const isFocus = useIsFocused();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [bookingProduct, setBookingProduct] = useState({});
-  const [modalVisiblePurchase, setModalVisiblePurchase] = useState(false);
+  const [wishlistData, setwishlistData] = useState([])
+  const getWishList = useGetWishList()
+  const putWishList = usePutWishList()
+  const isFocus = useIsFocused()
+  const [modalVisible, setModalVisible] = useState(false)
+  const [bookingProduct, setBookingProduct] = useState({})
+  const [modalVisiblePurchase, setModalVisiblePurchase] = useState(false)
 
-  const getPayment = useGetMyPayments();
-  const [paymentList, setPaymentList] = useState([]);
+  const getBooking = useGetBooking()
+
+  const getPayment = useGetMyPayments()
+  const [paymentList, setPaymentList] = useState([])
 
   useEffect(() => {
     if (isFocus) {
-      getPayment.handleGetMyPayment();
+      getPayment.handleGetMyPayment()
     }
-  }, [isFocus]);
+  }, [isFocus])
 
   useEffect(() => {
     if (getPayment.error) {
-      console.log(getPayment.error);
-      return;
+      console.log(getPayment.error)
+      return
     }
     if (getPayment.response) {
-      setPaymentList(getPayment.response);
+      setPaymentList(getPayment.response)
     }
-  }, [getPayment]);
+  }, [getPayment])
 
   useEffect(() => {
     if (isFocus) {
-      getWishList.handleGetWishList();
+      getWishList.handleGetWishList()
+      getBooking.handleGetBooking()
     }
-  }, [isFocus]);
+  }, [isFocus])
 
   useEffect(() => {
     if (putWishList.response) {
-      getWishList.handleGetWishList();
+      getWishList.handleGetWishList()
     }
-  }, [putWishList.response]);
+  }, [putWishList.response])
 
   useEffect(() => {
     if (getWishList.response) {
-      setwishlistData(getWishList.response.posts);
+      setwishlistData(getWishList.response.posts)
     }
-  }, [getWishList.response]);
+  }, [getWishList.response])
+  console.log('BOOKING', getBooking.response)
 
   return (
     <SafeAreaView>
-      <Text className="text-center text-2xl font-semibold mt-4">Wish List</Text>
-      <ScrollView className="mt-5 h-[90%] relative">
-        {wishlistData.length > 0 ? (
+      <Text className='text-center text-2xl font-semibold mt-4'>Wish List</Text>
+      <ScrollView className='mt-5 h-[90%] relative'>
+        {wishlistData?.filter((item) => item?.status === POST_STATUS.AVAILABLE)
+          ?.length > 0 ? (
           <>
-            {wishlistData.map((item, index) => {
-              return (
-                <View key={item.id}>
-                  <CardFavo
-                    paid={
-                      paymentList.find((o) => o.postId === item.id)
-                        ? true
-                        : false
-                    }
-                    setModalVisiblePurchase={setModalVisiblePurchase}
-                    setBookingProduct={setBookingProduct}
-                    setModalVisible={setModalVisible}
-                    putWishList={putWishList.handlePutWishList}
-                    product={item}
-                    i={index}
-                    navigation={navigation}
-                  ></CardFavo>
-                </View>
-              );
-            })}
+            {wishlistData
+              .filter((item) => item?.status === POST_STATUS.AVAILABLE)
+              .map((item, index) => {
+                return (
+                  <View key={item.id}>
+                    <CardFavo
+                      paid={
+                        paymentList.find((o) => o.postId === item.id)
+                          ? true
+                          : false
+                      }
+                      setModalVisiblePurchase={setModalVisiblePurchase}
+                      setBookingProduct={setBookingProduct}
+                      setModalVisible={setModalVisible}
+                      putWishList={putWishList.handlePutWishList}
+                      product={item}
+                      i={index}
+                      navigation={navigation}
+                      listBooking={getBooking.response}
+                    ></CardFavo>
+                  </View>
+                )
+              })}
           </>
         ) : (
-          <View className="mt-[20%] h-[300px] flex justify-center items-center  ">
+          <View className='mt-[20%] h-[300px] flex justify-center items-center  '>
             <Image
-              className="h-[90%] w-[50%] object-cover rounded-l-2xl"
-              source={require("../assets/nodata.jpg")}
+              className='h-[90%] w-[50%] object-cover rounded-l-2xl'
+              source={require('../assets/nodata.jpg')}
             />
-            <Text className="text-xl">No data</Text>
+            <Text className='text-xl'>No data</Text>
           </View>
         )}
       </ScrollView>
@@ -98,14 +108,18 @@ const FavoriteScreen = ({ navigation }) => {
         modalVisible={modalVisiblePurchase}
         setModalVisible={setModalVisiblePurchase}
         product={bookingProduct}
+        handleGetBooking={getBooking.handleGetBooking}
+        handleGetWishList={getWishList.handleGetWishList}
       />
       <ModalBooking
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         product={bookingProduct}
+        handleGetBooking={getBooking.handleGetBooking}
+        handleGetWishList={getWishList.handleGetWishList}
       />
     </SafeAreaView>
-  );
-};
+  )
+}
 
-export default FavoriteScreen;
+export default FavoriteScreen

@@ -11,10 +11,14 @@ export const usePosts = () => {
   const [response, setResponse] = useState()
 
   const handleGetPosts = async (params, query) => {
-    console.log(query ? '?' + query : '')
     setLoading(true)
     try {
-      const res = await AxiosGet(`posts/me${query ? '?' + query : ''}`, params)
+      const res = await AxiosGet(`posts/me${query ? '?' + query : ''}`, {
+        ...params,
+        ...(params?.order_by
+          ? { oder_by: params.order_by }
+          : { order_by: ORDER_OPTION.NEWEST })
+      })
 
       if (res) {
         setResponse(res?.data)
@@ -209,6 +213,7 @@ export const useGetPost = () => {
       })
 
       if (res) {
+        console.log('RES: ', res?.data)
         setResponse(res?.data)
         setError(null)
         setLoading(false)

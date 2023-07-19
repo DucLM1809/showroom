@@ -6,6 +6,7 @@ import { DefaultTheme, NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import MainScreen from './screens/MainScreen'
 import { useMemo } from 'react'
+import { LogBox } from 'react-native'
 
 const Stack = createNativeStackNavigator()
 
@@ -15,7 +16,7 @@ export default function App() {
       ...DefaultTheme,
       colors: {
         ...DefaultTheme.colors,
-        background:'#fff',
+        background: '#fff',
         text: '#191919',
         border: '#d9d9d9',
         primary: '#191919'
@@ -23,6 +24,9 @@ export default function App() {
     }),
     []
   )
+
+  LogBox.ignoreAllLogs()
+
   return (
     <Provider store={store}>
       <SafeAreaProvider theme={theme}>

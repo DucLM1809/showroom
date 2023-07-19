@@ -45,28 +45,28 @@ const HomePage = ({ navigation }: TabsStackScreenProps<'Home'>) => {
     {
       title: 'Bookings Management',
       name: SCREEN.BOOKING_MANAGE,
-      amount: fetchUsers.response.length,
+      amount: fetchBookings?.response?.length,
       icons: 'format-list-bulleted',
       color: 'black'
     },
     {
       title: 'Transactions Management',
       name: SCREEN.TRANSACTION_MANAGE,
-      amount: fetchPayments.response.length,
+      amount: fetchPayments?.response?.length,
       icons: 'monetization-on',
       color: 'black'
     },
     {
       title: 'Posts Management',
       name: SCREEN.POSTS_MANAGE,
-      amount: fetchPosts.res.length,
+      amount: fetchPosts?.res?.length,
       icons: 'post-add',
       color: 'black'
     },
     {
       title: 'Users Management',
       name: SCREEN.USERS_MANAGE,
-      amount: fetchUsers.response.length,
+      amount: fetchUsers?.response?.length,
       icons: 'people',
       color: 'black'
     }

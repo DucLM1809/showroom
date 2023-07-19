@@ -17,6 +17,7 @@ export interface Props {
   setBookingProduct: any
   inWishList: boolean
   putWishList: any
+  listBooking: any
 }
 
 const CardCate = ({
@@ -26,7 +27,8 @@ const CardCate = ({
   setModalVisible,
   setBookingProduct,
   inWishList,
-  putWishList
+  putWishList,
+  listBooking
 }: Props) => {
   return (
     <TouchableOpacity
@@ -76,15 +78,17 @@ const CardCate = ({
           {product.price}$
         </Text>
         {/* <Text className=' text-md font-semibold text-white'>{product.price}</Text> */}
-        <TouchableOpacity
-          className=' bg-white w-[30%] h-[30px] rounded-full flex justify-center items-center'
-          onPress={() => {
-            setModalVisible(true)
-            setBookingProduct(product)
-          }}
-        >
-          <Icons name='pending-actions' size={20} color={'#000'} />
-        </TouchableOpacity>
+        {!listBooking?.find((item: any) => item?.postId === product?.id) && (
+          <TouchableOpacity
+            className=' bg-white w-[30%] h-[30px] rounded-full flex justify-center items-center'
+            onPress={() => {
+              setModalVisible(true)
+              setBookingProduct(product)
+            }}
+          >
+            <Icons name='pending-actions' size={20} color={'#000'} />
+          </TouchableOpacity>
+        )}
       </View>
     </TouchableOpacity>
   )

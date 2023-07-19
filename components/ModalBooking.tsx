@@ -21,21 +21,21 @@ export interface props {
 const ModalBooking = ({ modalVisible, setModalVisible, product }: props) => {
   const [dateStr, setDateStr] = useState("");
   const [dateParse, setDateParse] = useState() as any;
-  const [note, setnote] = useState('')
+  const [note, setnote] = useState('.')
 
   const getBooking = useGetBooking()
   const postBooking = usePostBooking()
 
   useEffect(()=>{
     if(postBooking.error){
-      ToastAndroid.show(`Booking failed: please choose a date in the future`,ToastAndroid.LONG)
-      console.log(postBooking.response);
-      
+    
+      console.log(postBooking.error.response.data.detail);
+      ToastAndroid.show("Please pick a date in the future", ToastAndroid.SHORT);
     }
     else if( postBooking.response){
-      ToastAndroid.show(`Booking successfully `,ToastAndroid.LONG)
+      
     }
-  },[postBooking])
+  },[postBooking.handlePostBooing])
 
   return (
     <Modal

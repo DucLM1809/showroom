@@ -17,7 +17,9 @@ import ModalBooking from '../components/ModalBooking'
 import { useGetPostById } from '../hooks/usePost'
 import { useIsFocused } from '@react-navigation/native'
 import { useGetWishList, usePutWishList } from '../hooks/useWishList'
-import RenderHtml from 'react-native-render-html'
+import ModalPurchase from '../components/ModalPurchase'
+import { useGetMyPayments } from '../hooks/usePayment'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const DetailScreen = ({ route, navigation }) => {
   const width = Dimensions.get('window').width
@@ -26,11 +28,39 @@ const DetailScreen = ({ route, navigation }) => {
   const scrollX = new Animated.Value(0)
   const [modalVisible, setModalVisible] = useState(false)
   const [bookingProduct, setBookingProduct] = useState({})
+  const [modalVisiblePurchase, setModalVisiblePurchase] = useState(false)
+  const [purchaseProduct, setPurchaseProduct] = useState({})
+  const [myId, setMyId] = useState('')
   const isFocus = useIsFocused()
 
   const getPostById = useGetPostById()
   const getWishList = useGetWishList()
   const putWishList = usePutWishList()
+
+  const getPayment = useGetMyPayments()
+  const [paymentList, setPaymentList] = useState([])
+
+  const getMyId = async () => {
+    let id = await AsyncStorage.getItem('myId')
+    setMyId(id)
+  }
+
+  useEffect(() => {
+    if (isFocus) {
+      getMyId()
+      getPayment.handleGetMyPayment()
+    }
+  }, [isFocus])
+
+  useEffect(() => {
+    if (getPayment.error) {
+      console.log(getPayment.error)
+      return
+    }
+    if (getPayment.response) {
+      setPaymentList(getPayment.response)
+    }
+  }, [getPayment])
 
   useEffect(() => {
     if (isFocus) {
@@ -157,16 +187,31 @@ const DetailScreen = ({ route, navigation }) => {
             )
           })}
         </View>
+        {myId === product.ownerId && (
+          <Text className='text-base font-normal ml-2 mt-4'>
+            Admin note: {product?.adminNote}
+          </Text>
+        )}
       </View>
-      <View className='absolute bottom-0 flex-row justify-between w-[100vw] px-2 items-center mb-4'>
+      <View className='absolute bottom-0 flex-row justify-between w-[100vw] px-2 items-center'>
         <Text className='text-xl font-bold ml-2 '>${product.price}</Text>
         <View className='flex-row'>
-          <TouchableOpacity className=' flex-row items-center bg-[#eb2323] rounded-l-full py-2 pr-5 pl-2'>
-            <View className=' bg-white rounded-full p-2 mr-2'>
-              <Icons name='payment' size={30} />
-            </View>
-            <Text className='text-white text-lg '>Purchase</Text>
-          </TouchableOpacity>
+          {paymentList.find((o) => o.postId == product.id) ? (
+            <></>
+          ) : (
+            <TouchableOpacity
+              className=' flex-row items-center bg-[#eb2323] rounded-l-full py-2 pr-5 pl-2'
+              onPress={() => {
+                setModalVisiblePurchase(true)
+                setBookingProduct(product)
+              }}
+            >
+              <View className=' bg-white rounded-full p-2 mr-2'>
+                <Icons name='payment' size={30} />
+              </View>
+              <Text className='text-white text-lg '>Purchase</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             className=' flex-row items-center bg-[#000000] rounded-r-full py-2 pr-2 pl-5'
             onPress={() => {
@@ -180,6 +225,12 @@ const DetailScreen = ({ route, navigation }) => {
             </View>
           </TouchableOpacity>
         </View>
+
+        <ModalPurchase
+          modalVisible={modalVisiblePurchase}
+          setModalVisible={setModalVisiblePurchase}
+          product={bookingProduct}
+        />
         <ModalBooking
           modalVisible={modalVisible}
           setModalVisible={setModalVisible}

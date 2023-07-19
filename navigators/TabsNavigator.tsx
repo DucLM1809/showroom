@@ -2,7 +2,7 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
 import HomeScreen from '../screens/HomeScreen';
-import CartScreen from '../screens/CartScreen';
+import CartScreen from '../screens/PaymentScreen';
 import Icons from "@expo/vector-icons/MaterialIcons"
 import FavoriteScreen from '../screens/FavoriteScreen';
 import BookingScreen from '../screens/BookingScreen';

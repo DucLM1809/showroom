@@ -34,6 +34,7 @@ const UserViewPostsScreen = ({ navigation }) => {
   const [categoryData, setcategoryData] = useState([{ id: 0, name: 'All' }])
   const [postFilterData, setpostFilterData] = useState([])
   const [wishlist, setWishlist] = useState([])
+  const [myId, setMyId] = useState('')
   const isFocus = useIsFocused()
 
   const { handleGetPosts, response: responseGetPost, error } = useGetPost()
@@ -46,10 +47,17 @@ const UserViewPostsScreen = ({ navigation }) => {
   const getWishList = useGetWishList()
   const putWishList = usePutWishList()
 
-  // AsyncStorage.setItem(LOCAL_STORAGE_ITEMS.ACCESS_TOKEN,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHVkZW50MjE2MTk5OUBnbWFpbC5jb20iLCJ1c2VyX2lkIjoiZDE4ZGMzMzYtNzhmNy00NGM1LWE1MzctZmM3ODI5OTRmNDc1IiwiZXhwIjoxNjg5NTM4ODgyLCJyb2xlIjoiVVNFUiIsImlzX2FjdGl2ZSI6dHJ1ZSwiaXNfYWN0aXZhdGVkIjp0cnVlfQ.JAUF4FLYcs28VAzu-48iKiGCoXVahORWhnmKYpBkGrY')
+  const getMyId = async () => {
+    let id = await AsyncStorage.getItem('myId')
+    setMyId(id)
+  }
+
+  // AsyncStorage.setItem('myId','d18dc336-78f7-44c5-a537-fc782994f475')
+  // AsyncStorage.setItem(LOCAL_STORAGE_ITEMS.ACCESS_TOKEN,'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzdHVkZW50MjE2MTk5OUBnbWFpbC5jb20iLCJ1c2VyX2lkIjoiZDE4ZGMzMzYtNzhmNy00NGM1LWE1MzctZmM3ODI5OTRmNDc1IiwiZXhwIjoxNjg5NzIwNTc5LCJyb2xlIjoiVVNFUiIsImlzX2FjdGl2ZSI6dHJ1ZSwiaXNfYWN0aXZhdGVkIjp0cnVlfQ.nDyyQ_aTq0AI9yaSxc8haks3nPJmRl2xnm49766dg3s')
 
   useEffect(() => {
     if (isFocus) {
+      getMyId()
       handleGetPosts({ limit: 20 })
       handleGetCategories()
       getWishList.handleGetWishList()
@@ -110,12 +118,6 @@ const UserViewPostsScreen = ({ navigation }) => {
     <ScrollView>
       <SafeAreaView>
         <View>
-          <TouchableOpacity className='mt-2 ml-3' onPress={() => {}}>
-            <Icons name='menu' size={36} color={colors.text} />
-          </TouchableOpacity>
-        </View>
-
-        <View>
           <TouchableOpacity className=' flex-1, h-[52px] flex-row border rounded-[52px] border-[#d9d9d9] items-center px-[24px] mx-4 my-4'>
             <Icons name='search' size={24} color={colors.border} />
             <TextInput
@@ -169,7 +171,7 @@ const UserViewPostsScreen = ({ navigation }) => {
           <View>
             <ScrollView className='flex mt-2  px-2 w-full '>
               <MasonryList
-                data={postFilterData}
+                data={postFilterData.filter((o) => o.ownerId !== myId)}
                 keyExtractor={(item) => item.id}
                 numColumns={2}
                 showsVerticalScrollIndicator={false}

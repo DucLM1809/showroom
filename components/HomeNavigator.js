@@ -10,7 +10,7 @@ import Icons from '@expo/vector-icons/MaterialIcons'
 import UserViewPostsScreen from '../screens/UserViewPostsScreen'
 import FavoriteScreen from '../screens/FavoriteScreen'
 import BookingScreen from '../screens/BookingScreen'
-import CartScreen from '../screens/CartScreen'
+import CartScreen from '../screens/PaymentScreen'
 
 const Tab = createBottomTabNavigator()
 
@@ -41,7 +41,7 @@ const HomeNavigator = () => {
         }}
       />
       <Tab.Screen
-        name='Booking'
+        name={SCREEN.BOOKING}
         component={BookingScreen}
         options={{
           headerShown: false,

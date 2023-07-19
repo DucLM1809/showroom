@@ -1,7 +1,5 @@
 import {} from 'react-native'
 import React from 'react'
-import { Iproduct } from '../mockData/products'
-import tw from 'tailwind-react-native-classnames'
 import {
   Image,
   View,

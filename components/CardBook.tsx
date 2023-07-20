@@ -54,6 +54,8 @@ const CardBook = ({
     }
   }, [getPostById])
 
+  console.log(error)
+
   const handleCancelBooking = () => {
     Alert.alert('Confirm', 'Are you sure to cancel booking?', [
       {
@@ -101,7 +103,10 @@ const CardBook = ({
       handleGetBooking()
     }
 
-    error && showToast(error?.response?.data?.detail || 'Create Post Failed!')
+    error &&
+      showToast(
+        error?.response?.data?.detail || 'Update Booking Status Failed!'
+      )
   }, [error, response])
 
   return (
